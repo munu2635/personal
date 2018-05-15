@@ -7,17 +7,13 @@ import datetime
 gpio.setwarnings(False)
 gpio.setmode(gpio.BCM)
 gpio.cleanup()
-instance =dht11.DHT11(pin = 5)
+instance = dht11.DHT11(pin = 5)
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
 
 def on_publish(client, userdata, mid):
-<<<<<<< HEAD
 	print("message published")
-=======
-    print("message published")
->>>>>>> e201566aaa0ebd2069c37dfe241fa3c690f382b3
 
 mqttc = mqtt.Client()
 mqttc.on_connect = on_connect
@@ -29,7 +25,7 @@ mqttc.loop_start()
 try:
     num = 0
     num2 = 0
-    
+
     tem = 0
     hum = 0
     while True :

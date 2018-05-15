@@ -20,16 +20,11 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     print("Topic: " + msg.topic + " Message: " + msg.payload)
-<<<<<<< HEAD
     global LED
     LED = msg.payload
-                     
-client = mqtt.Client()                     
-=======
-    LED = msg.paylode
 
-client = mqtt.Client;
->>>>>>> e201566aaa0ebd2069c37dfe241fa3c690f382b3
+client = mqtt.Client()
+
 client.on_connect = on_connect
 client.on_message = on_message
 

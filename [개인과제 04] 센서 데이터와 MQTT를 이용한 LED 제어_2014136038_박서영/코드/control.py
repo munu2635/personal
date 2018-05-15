@@ -18,19 +18,11 @@ def on_message(client, userdata, msg):
     if msg.topic == "environment/temperature" :
 	   tem = float(msg.payload)
     if msg.topic == "environment/humidity" :
-<<<<<<< HEAD
 	   hum = float(msg.payload)
-	   
+
 def on_publish(client, userdata, mid):
     print("message published")
-    
-=======
-	   hum = msg.payload
 
-def on_publish(client, userdata, mid):
-	print("message published")
-
->>>>>>> e201566aaa0ebd2069c37dfe241fa3c690f382b3
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
@@ -40,15 +32,11 @@ client.loop_start()
 
 try:
     while True :
-<<<<<<< HEAD
+
         if tem > 35 and hum > 50:
             print("Publish data : LED - All, " + str(tem) + ", "+ str(hum))
             client.publish("control/led", "All")
-=======
-        if tem > 20 and hum > 40 :
-            print("Publish data : LED - All")
-            client.publish("control/led",All)
->>>>>>> e201566aaa0ebd2069c37dfe241fa3c690f382b3
+
         elif distance >= 50 :
             print("Publish data : LED - Green, " + str(distance) )
             client.publish("control/led", "Green")
@@ -64,4 +52,3 @@ except KeyboardInterrupt:
     client.loop_stop()
     client.unsubscribe(["environment/distance", "environment/temperature", "environment/humidity"])
     client.disconnect()
-
