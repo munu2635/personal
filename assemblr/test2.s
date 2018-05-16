@@ -1,4 +1,5 @@
 	.file	"test2.c"
+	.text
 	.globl	buf
 	.data
 	.align 16
@@ -21,6 +22,7 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	subq	$16, %rsp
 	movl	$0, -4(%rbp)
 	jmp	.L2
 .L3:
@@ -34,8 +36,12 @@ main:
 	jmp	.L6
 .L8:
 	nop
+	movl	4+buf(%rip), %eax
+	movl	%eax, -4(%rbp)
+	movl	$0, %eax
+	call	a
 	nop
-	popq	%rbp
+	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
@@ -58,5 +64,5 @@ a:
 	.cfi_endproc
 .LFE1:
 	.size	a, .-a
-	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.9) 5.4.0 20160609"
+	.ident	"GCC: (Ubuntu 7.3.0-16ubuntu3) 7.3.0"
 	.section	.note.GNU-stack,"",@progbits

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #define MAX 5
 
+void a();
 int buf[MAX] = { 3, 5, 2, 1, 4 };
 //	-> int buf[MAX] = { 3, 5, 2, 1, 4 };
 //	.globl buf
@@ -28,13 +29,22 @@ int buf[MAX] = { 3, 5, 2, 1, 4 };
 //	.type	main, @funtion
 
 void main(){
-	int i;
+	int i, j, k, l;
+
+	//make ather 
 	for(i = 0; i<MAX ;i++){}
 	while(1){
 		if( i == 4 ) break;
 	}
-	i = Buf[i]; //요것도 확인 바람
+	i = buf[1]; //요것도 확인 바람
+	// movl 4+buf(%rip), %eax
+	// movl %eax, -4(%rbp)
+	// maybe wasn't buf['1'] anther number? 
+
+
 	a(); //이거 확인 해야함
+	//call a just call...
+
 }
 
 //-------------------------------------- 함수 시작
@@ -47,7 +57,9 @@ void main(){
 //	movq	%rsp, %rdp
 //	.cfi_def_cfa_register 6
 
-//	movl	$0, -4(%rbp) //int i; i = -4(%rbp)
+
+// 	subq	$16, %rsp --> // int i, j, k, l;
+//	movl	$0, -4(%rbp) //for( i = 0; ... part
 //	jmp	.L2 //.L2로 점프 비교값부터 확인 for문 진입
 //.L3:
 //	addl	$1, -4(%rbp) // for문에서 i++ 라면
