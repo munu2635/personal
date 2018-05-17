@@ -28,13 +28,14 @@ main:
     	.cfi_offset 6, -16
     	movq 	%rsp, %rbp
     	.cfi_def_cfa_register 6
-	call insert
+	subq	$16, %rsp
 	movl	$0, -4(%rbp)
 	jmp	.L2
 .L3:
 	movl	-8(%rbp), %eax
 	cltq
-	leaq	0(,%rax,4), %rax
+	leaq	0(,%rax,4), %rdx
+	leaq	buf(%rip), %rax
 	movl	(%rdx,%rax), %eax
 	movl	%eax, %esi
 	leaq	.LC0(%rip), %rdi
@@ -66,13 +67,12 @@ insert:
   	.cfi_def_cfa 6, -16
   	movq 	%rsp, %rbp
   	.cfi_def_cfa_register 6
-  	subq	$16, %rbp
 	leaq	.LC1(%rip), %rdi
-	call	puts@PLT
+	call 	puts@PLT
+  	subq	$16, %rbp
 .L7:
   	cmpl 	$9, -4(%rbp)
   	jg 	.L10
-
 .L4:
 	movl	-8(%rbp), %eax
 	movl	%eax, -4(%rbp)
@@ -82,31 +82,6 @@ insert:
 	movl	(%rdx, %rax), %eax
 	movl	%eax, -16(%rbp)
 	cltq
-.L5:
-	movl	-8(%rbp), %eax
-	subl	$1, %eax
-	cltq
-	leaq	0(,%rax,4), %rdx
-	leaq	buf(%rip), %rax
-	movl	(%rdx, %rax), %eax
-	cmpl	%eax, -16(%rbp)
-	jnae	.L6
-	movl	$0, %ebp
-	cmpl	-8(%rbp), %ebp
-	jnae	.L6
-	leaq	0(,%rax,4), %rdx
-	leaq	buf(%rip), %rax
-	movl	(%rdx, %rax), %eax
-	movl	-8(%rbp), %eax
-	cltq
-	leaq 	0(,%rax,4), %rcx
-	leaq	buf(%rip), %rcx
-	movl	%edx,	(%rcx, %rax)
-	movl	%eax, buf(%rdx)
-	subl	$1, -8(%rbp)
-	leaq	.LC0(%rip), %rdi
-	call	puts@PLT
-	jmp	.L7
 .L6:
 	movl	-8(%rbp), %eax
 	cltq
@@ -115,10 +90,9 @@ insert:
 	movl	-16(%rbp), %edx
 	movl	%edx,  (%rcx, %rax)
 	addl	$1, -4(%rbp)
-  	jmp	.L2
+  	jmp	.L7
 .L10:
-  	leaq	.LC0(%rip), %rbp
-	call	puts@PLT
+  	nop
   	nop
   	pop 	%rbp
   	ret
