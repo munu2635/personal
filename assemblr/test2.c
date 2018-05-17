@@ -30,16 +30,28 @@ int buf[MAX] = { 3, 5, 2, 1, 4 };
 
 void main(){
 	int i, j, k, l;
+	j = 0;
+	//make ather
+	for(i = 1; i<MAX ;i++){
+				buf[i] = buf[i-1];
 
-	//make ather 
-	for(i = 0; i<MAX ;i++){}
+				if(buf[i-1] == 0);
+//	leaq 0(,%rax,4), %rcx
+//	leaq buf(%rip), %raxs
+//	movl (%rdx, %rax), %eax
+//	movl	%eax, -4(%rbp)
+//	addl	$1, -8(%rbp)
+//
+
+	}
+
 	while(1){
 		if( i == 4 ) break;
 	}
-	i = buf[1]; //요것도 확인 바람
+
 	// movl 4+buf(%rip), %eax
 	// movl %eax, -4(%rbp)
-	// maybe wasn't buf['1'] anther number? 
+	// maybe wasn't buf['1'] anther number?
 
 
 	a(); //이거 확인 해야함
@@ -70,7 +82,7 @@ void main(){
 		// jne 비교결과가 다를 떄 점프
 		// jne 크지 않을 때 점프
 		// jle 작거나 같을때 점프 등등 필요할때ㅐ 찾아보기
-//	jle .l3 // 작거나 같을때 .L3으로 점프한다 만약 값이 크다면 다음줄로 
+//	jle .l3 // 작거나 같을때 .L3으로 점프한다 만약 값이 크다면 다음줄로
 //.L6 // 여기 부터 while문
 //	je .L8  // 비교결과가 같을때 .L8로 이동
 //	jmp .L6 // 아니면 계속 반복

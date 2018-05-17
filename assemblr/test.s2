@@ -23,21 +23,21 @@ main:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
-	movl	$0, -4(%rbp)
-	movl	$1, -8(%rbp)
+	movl	$0, -8(%rbp)
 	jmp	.L2
 .L3:
-	movl	-8(%rbp), %eax
-	subl	$1, %eax
-	cltq
-	leaq	0(,%rax,4), %rdx
-	leaq	buf(%rip), %rax
-	movl	(%rdx,%rax), %edx
 	movl	-8(%rbp), %eax
 	cltq
 	leaq	0(,%rax,4), %rcx
 	leaq	buf(%rip), %rax
+	movl	-8(%rbp), %edx
 	movl	%edx, (%rcx,%rax)
+	movl	-8(%rbp), %eax
+	cltq
+	leaq	0(,%rax,4), %rdx
+	leaq	buf(%rip), %rax
+	movl	(%rdx,%rax), %eax
+	movl	%eax, -4(%rbp)
 	addl	$1, -8(%rbp)
 .L2:
 	cmpl	$4, -8(%rbp)
