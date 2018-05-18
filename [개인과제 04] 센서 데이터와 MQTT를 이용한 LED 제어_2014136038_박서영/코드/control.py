@@ -32,8 +32,7 @@ client.loop_start()
 
 try:
     while True :
-
-        if tem > 35 and hum > 50:
+        if tem > 35 or hum > 50:
             print("Publish data : LED - All, " + str(tem) + ", "+ str(hum))
             client.publish("control/led", "All")
 
