@@ -34,11 +34,10 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_ENABLE_DISCOVER = 2;
     TextView logText; //각각 로그와 저장된 이름데이터를 출력할 텍스트 뷰
 
-    List<place> place_list;
-    final static int MAX = 3;
+    ArrayList<place> place_list;
+    final static int MAX = 4;
 
     TextFileManager mFileMgr; //파일 입출력
-
 
     // placeclass를 초기화 해주는 함수 과제에서 주어진 총 3개의 위치를 나타낸다.
     void init_place(){
@@ -49,14 +48,10 @@ public class MainActivity extends AppCompatActivity {
     }
     //테스트 하는데 사용되는 기본데이터가 저장된 부분
     void set_place(){
-        place_list.get(0).set_data("집","11","hy1738");
-
-        //place_list.get(0).set_data("4층 엘리베이터 앞","","");
-        place_list.get(1).set_data("408호 계단앞 ", "", "");
-        place_list.get(2).set_data("401호 계단 앞", "", "");
+        place_list.get(0).set_data("4층 엘리베이터 앞","KUTAP_N","KOREATECH",-84,-80);
+        place_list.get(1).set_data("408호 계단앞", "KUTAP", "KUTAP_N",-68,-67);
+        place_list.get(2).set_data("401호 계단 앞", "KUTAP", " ",-69,-65);
     }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
         mFileMgr = new TextFileManager();
         mFileMgr.delete(); // 처음 시작할때 저장되어있는 값을 삭제하고 시작한다.
-
     }
 
     @Override
@@ -100,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View view) {
          if(view.getId() == R.id.startMonitorBtn) {
                 Intent intent = new Intent(this, EncounterMonitor.class);
-                intent.putParcelableArrayListExtra("place", (ArrayList<? extends Parcelable>) place_list);
+                intent.putParcelableArrayListExtra("place", place_list);
                 startService(intent); //모든 저장 정보 intent 및 서비스 시작
         } else if(view.getId() == R.id.stopMonitorBtn) {
            stopService(new Intent(this, EncounterMonitor.class));  //서비스 끝

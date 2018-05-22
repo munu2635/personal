@@ -15,24 +15,28 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+import static android.content.Intent.getIntent;
 
 
 public class EncounterMonitor extends Service {
     private static final String TAG = "EncounterMonitor";
-    final static int MAX = 3;
-    private AccessibilityService mContext;
-    WifiManager wm = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+    final static int MAX = 4;
+    WifiManager wm;
+    IntentFilter filter;
+    List<ScanResult> scanList;
 
     Timer timer = new Timer();
     TimerTask timerTask = null;
 
-    List<place> place_list;
+    ArrayList<place> place_list ;
+    ScanResult result;
+    place result_place;
     // 현재 시간을 출력하기 위해 사용하였다.
     long now = System.currentTimeMillis();
     Date date = new Date(now);
@@ -55,23 +59,26 @@ public class EncounterMonitor extends Service {
                 now = System.currentTimeMillis();
                 date = new Date(now);
                 now_date = mFo.format(date);
+                scanList = wm.getScanResults();
 
-                //intent로 arraylist 값을 받기위해 사용되었다.
-                place_list = intent.getParcelableArrayListExtra("place");
-                if(wm.getScanResults() != null) {
-                    int place_num = 4;
 
-                    // 저장된 장소의 상위 두개의 ap값과 같은 값을 갖으면 장소가 맞다고 하고 시각과 장소를 기록한다.
-                    for (int i = 0; i < MAX; i++) {
-                        if(wm.getScanResults().get(0).SSID == place_list.get(i).ap1_SSRD) {
-                            if (wm.getScanResults().get(1).SSID == place_list.get(i).ap2_SSRD) {
-                                mFileMgr.save(now_date + " " + place_list.get(i).p_name + "\n");
+                // 저장된 장소의 상위 두개의 ap값과 같은 값을 갖으면 장소가 맞다고 하고 시각과 장소를 기록한다.
+                if(scanList != null) {
+                    int place_num = MAX + 1;
+                    for(int i = 1; i < MAX; i++) {
+                        result_place = place_list.get(i);
+                        result = scanList.get(0);
+                        if ( result.SSID.equals(result_place.ap1_SSRD)&& result.level > result_place.ap1_RSSI - 20){
+                            mFileMgr.save(now_date +" " + result.SSID.equals(result_place.ap1_SSRD) +" " + result.SSID + "\n");
+                            result = scanList.get(1);
+                            if (result.SSID.equals(result_place.ap2_SSRD) && result.level > result_place.ap2_RSSI - 20){
+                                mFileMgr.save(now_date + " " + result.SSID.equals(result_place.ap2_SSRD) + " " + result.SSID + "\n");
                                 place_num = i;
-                                break;
+                                mFileMgr.save(now_date + " " +result_place.p_name  + "\n");}
                             }
-                        }
-                    }// 등록된 장소가 아니라고 판단되면 unknown을 기록한다.
-                    if(place_num == 4){
+                    }
+                    // 등록된 장소가 아니라고 판단되면 unknown을 기록한다.
+                    if(place_num == MAX + 1){
                         mFileMgr.save(now_date + " unknown"  + "\n");
                     }
                 }
@@ -84,31 +91,33 @@ public class EncounterMonitor extends Service {
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate()");
-        mFileMgr.save("in" +  "\n");
-        IntentFilter filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        mContext.registerReceiver(mWifiReceiver, filter);
-        
+
         mFileMgr = new TextFileManager();
         now = System.currentTimeMillis();
         date = new Date(now);
         now_date = mFo.format(date);
 
+
+        if(wm.isWifiEnabled() == false)
+            wm.setWifiEnabled(true);
+
         //모니터링 시작을 나타낸다.
         mFileMgr.save("모니터링 시작 - " + now_date +  "\n");
-        mFileMgr.save("data save" +  "\n");
         // BroadcastReceiver 등록
         registerReceiver(mWifiReceiver, filter);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         Toast.makeText(this, "EncounterMonitor 시작", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "onStartCommand()");
 
-        startTimerTask();
+        place_list = intent.getParcelableArrayListExtra("place");
 
+        startTimerTask();
         return super.onStartCommand(intent, flags, startId);
     }
 
