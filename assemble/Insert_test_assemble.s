@@ -1,6 +1,6 @@
-  	.globl buf
+ 	.globl buf
   	.data
-  	.align 16
+  	.align 32
   	.type buf, @object
   	.size buf, 40
 buf:
@@ -14,9 +14,9 @@ buf:
   	.long 3
   	.long 8
   	.long 4
-  	.text
+  	.section	.rodata
 .LC0:
-	.string "%d, "
+	.string "%2d "
 	.text
   	.globl main
 	.type main, @function
@@ -28,11 +28,12 @@ main:
     	.cfi_offset 6, -16
     	movq 	%rsp, %rbp
     	.cfi_def_cfa_register 6
+	call insert
 	subq	$16, %rsp
 	movl	$0, -4(%rbp)
 	jmp	.L2
 .L3:
-	movl	-8(%rbp), %eax
+	movl	-4(%rbp), %eax
 	cltq
 	leaq	0(,%rax,4), %rdx
 	leaq	buf(%rip), %rax
@@ -43,11 +44,11 @@ main:
 	call 	printf@PLT
 	addl	$1, -4(%rbp)
 .L2:
-	cmpl	$4, -4(%rbp)
+	cmpl	$9, -4(%rbp)
 	jle	.L3
 	movl	$0, %eax
 	nop
-	popq  	%rbp
+	leave
     	.cfi_def_cfa 7, 8
     	ret
     	.cfi_endproc

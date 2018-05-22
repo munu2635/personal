@@ -2,15 +2,23 @@
 	.text
 	.globl	buf
 	.data
-	.align 16
+	.align 32
 	.type	buf, @object
-	.size	buf, 20
+	.size	buf, 40
 buf:
 	.long	3
 	.long	5
 	.long	2
 	.long	1
 	.long	4
+	.long	7
+	.long	10
+	.long	6
+	.long	8
+	.long	9
+	.section	.rodata
+.LC0:
+	.string	"%d, "
 	.text
 	.globl	main
 	.type	main, @function
@@ -24,30 +32,21 @@ main:
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
 	movl	$0, -4(%rbp)
-	movl	$1, -8(%rbp)
 	jmp	.L2
 .L3:
-	movl	-8(%rbp), %eax
-	subl	$1, %eax
+	movl	-4(%rbp), %eax
 	cltq
 	leaq	0(,%rax,4), %rdx
 	leaq	buf(%rip), %rax
-	movl	(%rdx,%rax), %edx
-	movl	-8(%rbp), %eax
-	cltq
-	leaq	0(,%rax,4), %rcx
-	leaq	buf(%rip), %rax
-	movl	%edx, (%rcx,%rax)
-	addl	$1, -8(%rbp)
+	movl	(%rdx,%rax), %eax
+	movl	%eax, %esi
+	leaq	.LC0(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	addl	$1, -4(%rbp)
 .L2:
-	cmpl	$4, -8(%rbp)
+	cmpl	$9, -4(%rbp)
 	jle	.L3
-.L6:
-	cmpl	$4, -8(%rbp)
-	je	.L8
-	jmp	.L6
-.L8:
-	nop
 	movl	$0, %eax
 	call	a
 	nop
@@ -57,6 +56,10 @@ main:
 	.cfi_endproc
 .LFE0:
 	.size	main, .-main
+	.section	.rodata
+.LC1:
+	.string	"everything ok"
+	.text
 	.globl	a
 	.type	a, @function
 a:
@@ -67,6 +70,10 @@ a:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	leaq	.LC1(%rip), %rdi
+	call	puts@PLT
+	leaq	.LC1(%rip), %rdi
+	call	puts@PLT
 	nop
 	popq	%rbp
 	.cfi_def_cfa 7, 8

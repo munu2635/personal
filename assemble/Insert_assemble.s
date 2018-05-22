@@ -1,6 +1,6 @@
   	.globl buf
   	.data
-  	.align 16
+  	.align 32
   	.type buf, @object
   	.size buf, 40
 buf:
@@ -14,9 +14,9 @@ buf:
   	.long 3
   	.long 8
   	.long 4
-  	.text
+  	.section	.rodata
 .LC0:
-	.string "%d, "
+	.string "%2d "
 	.text
   	.globl main
 	.type main, @function
@@ -29,12 +29,14 @@ main:
     	movq 	%rsp, %rbp
     	.cfi_def_cfa_register 6
 	call insert
+	subq	$16, %rsp
 	movl	$0, -4(%rbp)
 	jmp	.L2
 .L3:
-	movl	-8(%rbp), %eax
+	movl	-4(%rbp), %eax
 	cltq
-	leaq	0(,%rax,4), %rax
+	leaq	0(,%rax,4), %rdx
+	leaq	buf(%rip), %rax
 	movl	(%rdx,%rax), %eax
 	movl	%eax, %esi
 	leaq	.LC0(%rip), %rdi
@@ -42,7 +44,7 @@ main:
 	call 	printf@PLT
 	addl	$1, -4(%rbp)
 .L2:
-	cmpl	$4, -4(%rbp)
+	cmpl	$9, -4(%rbp)
 	jle	.L3
 	movl	$0, %eax
 	nop
@@ -104,9 +106,7 @@ insert:
 	movl	%edx,	(%rcx, %rax)
 	movl	%eax, buf(%rdx)
 	subl	$1, -8(%rbp)
-	leaq	.LC0(%rip), %rdi
-	call	puts@PLT
-	jmp	.L7
+	jmp	.L5
 .L6:
 	movl	-8(%rbp), %eax
 	cltq
@@ -115,7 +115,7 @@ insert:
 	movl	-16(%rbp), %edx
 	movl	%edx,  (%rcx, %rax)
 	addl	$1, -4(%rbp)
-  	jmp	.L2
+  	jmp	.L7
 .L10:
   	leaq	.LC0(%rip), %rbp
 	call	puts@PLT

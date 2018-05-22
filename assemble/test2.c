@@ -1,9 +1,9 @@
 //	.file 	"test2.c"
 #include <stdio.h>
-#define MAX 5
+#define MAX 10
 
 void a();
-int buf[MAX] = { 3, 5, 2, 1, 4 };
+int buf[MAX] = { 3, 5, 2, 1, 4, 7, 10, 6, 8, 9 };
 //	-> int buf[MAX] = { 3, 5, 2, 1, 4 };
 //	.globl buf
 //	.data
@@ -29,25 +29,19 @@ int buf[MAX] = { 3, 5, 2, 1, 4 };
 //	.type	main, @funtion
 
 void main(){
-	int i, j, k, l;
-	j = 0;
+	int i;
 	//make ather
-	for(i = 1; i<MAX ;i++){
-				buf[i] = buf[i-1];
+	for(i = 0; i<MAX ;i++){
+		printf("%d, ", buf[i]);
 
-				if(buf[i-1] == 0);
+	}
 //	leaq 0(,%rax,4), %rcx
 //	leaq buf(%rip), %raxs
 //	movl (%rdx, %rax), %eax
 //	movl	%eax, -4(%rbp)
 //	addl	$1, -8(%rbp)
-//
 
-	}
 
-	while(1){
-		if( i == 4 ) break;
-	}
 
 	// movl 4+buf(%rip), %eax
 	// movl %eax, -4(%rbp)
@@ -110,7 +104,11 @@ void main(){
 
 
 
-void a(){} //기본 함수 print
+void a(){
+
+	printf("everything ok\n");
+	printf("everything ok\n");
+} //기본 함수 print
 //-------------------------------------- a 함수 시작
 // a:
 // .LFB1:
