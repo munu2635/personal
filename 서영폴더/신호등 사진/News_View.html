@@ -1,0 +1,704 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<meta http-equiv="X-UA-Compatible" content="IE=5">
+<title>부울경뉴스</title>
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<link rel="stylesheet" type="text/css" href="/MenuSkin/Style_05/Menu_Style.css">
+<link rel="alternate" type="application/rss+xml" title="부울경뉴스" href="/rss/allArticle.xml">
+<script type="text/javascript" src="/script/user.js"></script>
+<script type="text/javascript" src="/script/font.js"></script>
+<script type="text/javascript" src="/script/floating.banner.js"></script>
+<script type="text/javascript" src="/script/banner.js?0611"></script>
+<script type="text/javascript" src="/script/poll.js"></script>
+<script type="text/javascript" src="/script/ad.control.js"></script>
+<script type="text/javascript" src="/script/vod.js"></script>
+<!--<script type="text/javascript" src="/script/jquery.1.6.min.js"></script>-->
+<script type="text/javascript" src="/script/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/script/sj2_page.js"></script>
+<script type="text/javascript" src="/MenuSkin/Style_05/Menu_Bar.js"></script>
+<script type="text/javascript" src="/script/resizePhoto.js"></script>
+
+<script language="javascript">
+<!--
+// 현재시간  추가
+var ___currentTime = parseInt("1527318898", 10);
+
+// 즐겨찾기 스크립트
+function bookmark() {
+	window.external.AddFavorite("http://www.bulgungnews.com", "부울경뉴스")
+}
+
+/// 통합검색셀렉트
+function viewSchselopt() {
+	var schselopt = document.getElementById("schselopt_list");
+
+	if(schselopt.style.display=="block") {
+		schselopt.style.display="none";
+	} else {
+		schselopt.style.display="block";
+	}
+}
+
+function schChange(code,title) {
+	var schselopt = document.getElementById("schselopt_list");
+	var secTitle = document.getElementById("secTitle");
+
+	schselopt.style.display="none";
+
+	document.topSearchForm.sc_section_code.value=code;
+	secTitle.innerHTML = title;
+}
+
+//모바일 체크
+ad_check_mobile = "";
+var adStrUserAgent = window.navigator.userAgent;
+
+if(adStrUserAgent!= null)
+{
+	 if(
+		  adStrUserAgent.indexOf("Android") != -1 ||    //Android
+		  adStrUserAgent.indexOf("SAMSUNG") != -1 ||     //samsung
+		  adStrUserAgent.indexOf("PSP") != -1 ||         //psp
+		  adStrUserAgent.indexOf("PLAYSTATION") != -1 || //playstation
+		  adStrUserAgent.indexOf("lgtelecom") != -1 ||   //LGT
+		  adStrUserAgent.indexOf("Smartphone") != -1 ||  //스마트폰
+		  adStrUserAgent.indexOf("Symbian") != -1 ||     //심비안폰
+		  adStrUserAgent.indexOf("PPC") != -1 ||         //??
+		  adStrUserAgent.indexOf("Windows CE") != -1 ||  //PDA
+		  adStrUserAgent.indexOf("iPhone") != -1 ||      //애플폰
+		  adStrUserAgent.indexOf("iPod") != -1 )         //애플
+	 {
+		ad_check_mobile = 1;
+	 }
+	 else
+	 {
+		ad_check_mobile = 0;
+	 }
+}
+
+//검색어 입력 확인
+function SearchCheck() {
+	var flag=0;
+
+	if(document.topSearchForm.sc_word.value=="") {
+		alert("검색 할 기사를 입력하세요.");
+		document.topSearchForm.sc_word.focus();
+		flag=1;
+	}
+
+	if(flag==0) {
+		document.topSearchForm.submit();
+	}
+
+	return;
+}
+
+//검색 창 바꾸기
+function setSearchBox(idx) {
+	for (i=1;i<=1;i++) {
+	var objtab = document.getElementById("Search1");
+	var objtab2 = document.getElementById("Search2");
+	if (!objtab || !objtab2) { return; }
+		objtab.style.display = "block";
+		objtab2.style.display = "none";
+	if ( i == idx ) {
+		objtab.style.display = "none";
+		objtab2.style.display = "block";
+		document.topSearchForm.sc_word.focus();
+		}
+	}
+}
+//-->
+</script>
+
+<!-- [WEB] Dable 스크립트 시작 / 문의 support@dable.io -->
+<script>
+(function(d,a,b,l,e,_) {
+d[b]=d[b]||function(){(d[b].q=d[b].q||[]).push(arguments)};e=a.createElement(l);
+e.async=1;e.charset='utf-8';e.src='//static.dable.io/dist/plugin.min.js';
+_=a.getElementsByTagName(l)[0];_.parentNode.insertBefore(e,_);
+})(window,document,'dable','script');
+dable('setService', 'bulgungnews.com/ndsoft');
+dable('sendLog');
+</script>
+<!-- [WEB] Dable 스크립트 종료 / 문의 support@dable.io -->
+
+</head>
+
+<body>
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+	<tr>
+		<td align="center">
+
+<!-- 레이어 팝업 : s -->
+<script type="text/javascript" src="/popupManagerVer2/js/flow.script.js"></script>
+<script type="text/javascript" src="/popupManagerVer2/js/dom.drag.js"></script>
+
+<script language = "javascript">	
+	function layerClose(layer) {	
+		document.getElementById(layer).style.display = "none";	
+	}
+
+	function layerEnd(layer, day) {	
+		document.getElementById(layer).style.display = "none";
+		setCookieLayer(layer, 'ok', day);
+	}
+
+	function layerEndChk(idx) {	
+		document.getElementById('layerPopup_'+idx).style.display = "none";
+		if(document.getElementById('layerChk_'+idx).checked == true){
+			var day = parseInt(document.getElementById('expires_time_'+idx).value);			
+			setCookieLayer('layerPopup_'+idx, 'ok', day);
+		}		
+	}
+	
+	function setCookieLayer( name, value, expiredays ) {
+		var todayDate = new Date();
+		todayDate.setDate( todayDate.getDate() + expiredays );
+		
+		todayDate.setHours(0);
+		todayDate.setMinutes(0);
+		todayDate.setSeconds(0);
+
+		document.cookie = name + "=" + escape( value ) + ";DOMAIN=www.bulgungnews.com; path=/; expires=" + todayDate.toGMTString() + ";"
+	}
+	
+</script>
+
+<!-- 레이어 팝업 처리 : s -->
+<table width="960" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<div style="POSITION: relative; width:100%;z-index:100000;">
+			<div id="empty" style="position:absolute; display:block;"></div>
+			</div>
+		</td>
+	</tr>
+</table>
+<!--레이어 팝업 처리 : e--><!-- 레이어 팝업 : e -->
+
+<!-- 
+	윈도우 팝업 : s
+	client 모니터 사이즈를 넘기기 위해서 iframe으로 처리.
+-->
+<iframe id = "windowPopup" style = "display:none"></iframe>
+<script language = "javascript">			
+	document.getElementById("windowPopup").contentWindow.location.href = "/popupManagerVer2/windowPopup.html?windowWidth=" + screen.width + "&parentPage=/SubMain/News/News_View.asp";  	
+</script>
+<!-- 윈도우 팝업 : e -->
+<script type="text/javascript">
+<!--
+//메뉴 스타일 불러옴 : 메뉴 /script/menubar.js 와 같이 사용되어야 함
+//submenuStyle	: 서브메뉴 펼침 스타일 (horizon : 가로로, vertical : 세로 슬라이딩)
+var exceptIdx = new Array(); //제외할 메뉴 인덱스번호 (0부터 시작:type integer)
+var submenuStyle="horizon";
+//-->
+</script>
+
+
+<!-- 로고영역 -->
+<div id="HeadLogo">
+	<div id="Default_Warp">
+
+		<!-- 로고/배너 -->
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td width="250" align="left" valign="bottom">
+
+				<!-- 최종편집 -->
+				<div id="Top_Mark">
+					<ul>
+						<li class="home"><a href="#" onClick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://www.bulgungnews.com');">시작페이지</a></li>
+						<li class="mark"><a href="javascript:bookmark()">즐겨찾기 추가</a></li>
+						<li class="update"><strong>UPDATE</strong> : 2018.5.26 토 08:52</li>
+					</ul>
+				</div>
+
+				</td>
+				<td align="center" height="90"><a href="http://www.bulgungnews.com" onfocus="this.blur();" title="부울경뉴스"><img src="/image2006/logo.gif" border="0" alt="부울경뉴스"></a></td>
+				<td width="250" valign="bottom">
+				<!-- 통합검색 -->
+				<div id="SearchForm">
+					<fieldset>
+												<form action="http://www.bulgungnews.com/news/articleList.html" method="post" name="topSearchForm" id="topSearchForm">
+							<input type="hidden" name="sc_area" value="A">
+							<input type="hidden" name="view_type" value="sm">
+							<input maxlength="255" name="" class="inptxt" id="Search1" value="검색 할 기사를 입력하세요." onclick="setSearchBox(1);">
+							<input maxlength="255" name="sc_word" id="Search2" style="display:none;" onkeydown="if(event.keyCode==13){SearchCheck();}">
+							<button title="기사검색" onClick="SearchCheck();setSearchBox(1);">기사검색</button>
+						</form>
+					</fieldset>
+				</div>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+
+</div>
+
+<!-- 메뉴바영역 -->
+<div id="HeadMenu">
+	<div id="Default_Warp">
+		
+		<!-- 섹션 -->
+		<div id="MenuBar">
+			<ul id="mega-menu" class="mega-menu">
+				
+				<li class="megaline"><a href="/news/articleList.html"><strong>뉴스홈</strong></a>
+					<ul>
+						<li class="sub nobr"><a href="/news/articleList.html?sc_section_code=S1N1&view_type=sm">사회</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N2&view_type=sm">경제</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N3&view_type=sm">정치</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N4&view_type=sm">문화</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N5&view_type=sm">스포츠</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N6&view_type=sm">여행</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N7&view_type=sm">교육</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N8&view_type=sm">건강</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N9&view_type=sm">영화</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N10&view_type=sm">종합</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N11&view_type=sm">인물</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N12&view_type=sm">사설·칼럼</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N13&view_type=sm">기획</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N14&view_type=sm">특집</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N15&view_type=sm">핫이슈</a></li>
+						<li class="sub"><a href="/news/articleList.html?sc_section_code=S1N16&view_type=sm">보도자료</a></li>
+					</ul>
+				</li>
+
+				
+	<li class="megaline"><a href="http://www.bulgungnews.com/news/articleList.html?sc_section_code=S1N17&view_type=sm"><strong>지역소식</strong></a>
+		<ul>
+			<li class="sub nobr"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N3&view_type=sm">지역소식-1</a></li>
+		</ul>
+	</li>
+
+	<li class="megaline"><a href="http://www.bulgungnews.com/news/articleList.html?sc_section_code=S1N18&view_type=sm"><strong>소식·정보</strong></a>
+		<ul>
+			<li class="sub nobr"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N4&view_type=sm">결혼</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N5&view_type=sm">부음</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N6&view_type=sm">인물동정</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N7&view_type=sm">등산</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N8&view_type=sm">모임</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N9&view_type=sm">향우소식</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N10&view_type=sm">공연·행사</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N11&view_type=sm">동창회</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N12&view_type=sm">개업/이전</a></li>
+		</ul>
+	</li>
+
+	<li class="megaline"><a href="http://www.bulgungnews.com/news/articleList.html?sc_section_code=S1N19&view_type=sm"><strong>동영상뉴스</strong></a>
+		<ul>
+		</ul>
+	</li>
+
+	<li class="megaline"><a href="http://www.bulgungnews.com/news/articleList.html?sc_section_code=S1N20&view_type=sm"><strong>포토</strong></a>
+		<ul>
+			<li class="sub nobr"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N13&view_type=sm">포토뉴스</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N14&view_type=sm">포토에세이</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N15&view_type=sm">이곳저곳</a></li>
+		</ul>
+	</li>
+
+	<li class="megaline"><a href="http://www.bulgungnews.com/news/articleList.html?sc_section_code=S1N21&view_type=sm"><strong>N포터</strong></a>
+		<ul>
+			<li class="sub nobr"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N1&view_type=sm">N뉴스</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N2&view_type=sm">N포토</a></li>
+		</ul>
+	</li>
+
+	<li class="megaline"><a href="http://www.bulgungnews.com/news/articleList.html?sc_section_code=S1N22&view_type=sm"><strong>여행·TOUR</strong></a>
+		<ul>
+			<li class="sub nobr"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N16&view_type=sm">맛집</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N17&view_type=sm">숙박</a></li>
+			<li class="sub"><a href="http://www.bulgungnews.com/news/articleList.html?sc_sub_section_code=S2N18&view_type=sm">지역업체정보</a></li>
+		</ul>
+	</li>
+
+	<li class="megaline"><a href="http://www.bulgungnews.com/news/articleList.html?sc_section_code=S1N24&view_type=sm"><strong>부울경뉴스TV</strong></a>
+		<ul>
+		</ul>
+	</li>
+
+	<li class="megaline"><a href="http://www.bulgungnews.com/bbs/list.html?table=bbs_10"><strong>복덕방</strong></a>
+		<ul>
+			<li class="sub nobr"><a href="http://www.bulgungnews.com/bbs/list.html?table=bbs_10">복덕방</a></li>
+		</ul>
+	</li>
+			</ul>
+			
+			<!-- 기타버튼 -->
+			<div id="AndBtn">
+				<ul>
+					<li class="nobr"><a href="/com/kd.html">구독신청</a></li>
+					<li><a href="/com/ad.html">광고문의</a></li>
+					<li><a href="/news/articleList.html?view_type=sm">전체기사보기</a></li>
+				</ul>
+			</div>
+
+			<!-- 로그인/회원가입/SNS버튼 -->
+			<div id="LoginBtn">
+				<ul>
+					<li class="nobr"><a href="/member/login.html">로그인</a></li>
+					<li><a href="/member/index.html">회원가입</a></li>
+					<!-- <li><a href="http://m.www.bulgungnews.com" target="_blank">모바일웹</a></li> -->
+					<li class="pdbr"><a href="#" class="sns_twi" target="_blank">트위터</a></li>
+					<li class="pdbr"><a href="#" class="sns_fac" target="_blank">페이스북</a></li>
+					<li class="pdbr"><a href="/rss/" class="sns_rss">RSS</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">resizePhoto.addEvt(window, "load", resizePhoto.init);//이미지 리사이즈+light box</script>
+
+<!--기사면 플로팅 배너-->
+<style>
+#floating_banner_body {position:relative; margin:0 auto; width:960px;}
+#floating_banner_left {position:absolute; width:120px; z-index:100; left:-135px; top:0px;}
+#floating_banner_right {position:absolute; width:120px; z-index:100; right:-135px; top:0px;}
+#floating_banner_right2 {position:absolute; width:120px; z-index:100; right:-180px; top:610px;}
+</style>
+
+<div id="floating_banner_body">
+    <ul id="floating_banner_left" class="nd_floating_banner" data-scroll='n' data-parent-target="ND_Warp" data-top-margin="5" data-duration="300">
+        <li>
+			<script language="javascript" src="http://ads.realclick.co.kr/ndsoft/ndsoft_b.js?mid=ndCode738&pos=sky1"></script>
+        </li>
+    </ul>
+    <ul id="floating_banner_right" class="nd_floating_banner" data-scroll='n' data-top-margin="5" data-duration="300">
+        <li>
+			<!-- AD Plus Script Start (부울경뉴스 스카이배너 1타입) -->
+			<script language="javascript" src="http://adimg.wisenut.co.kr/common/js/amc/wiseAdSvc.pj?code=5f79ab0477aa575be9c7797e81c8c79b" type="text/javascript"></script>
+			<!-- AD Plus Script End -->
+        </li>
+    </ul>
+    <ul id="floating_banner_right2" class="nd_floating_banner" data-scroll='n' data-top-margin="5" data-duration="300">
+        <li>
+        </li>
+    </ul>
+</div>
+
+<div id="ND_Warp">
+<div id="divLAS" style="visibility:hidden;"></div>
+<table width="960" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="690" align="left" valign="top">
+
+
+			
+
+			<table width="100%" border="0" cellpadding="0" cellspacing="1" bgcolor="#d0d0d0">
+				<tr>
+					<td bgcolor="#f6f6f6" style="padding:10px 20px;">
+					<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="View_Local"><a href="http://www.bulgungnews.com" target="_top">홈</a>
+							 &gt; <a href="/news/articleList.html?sc_section_code=S1N20"><strong>포토</strong></a> &gt; <a href="/news/articleList.html?sc_sub_section_code=S2N13">포토뉴스</a>							</td>
+						</tr>
+						<tr>
+							<td style="padding:5px 0px;">
+							<div class="View_Title"><strong><!--CM_TITLE-->울산 중구의 밤거리가 밝아졌다. 횡단보도 투광등 설치<!--/CM_TITLE--></strong><span>- 전체 23곳에 91개 투광등 설치 - 
+</span></div><div class="View_Info">마스터&nbsp;&nbsp;|&nbsp;&nbsp;<a href="mailto.html?mail=-">-</a></div>							</td>
+						</tr>
+					</table>
+					</td>
+				</tr>
+			</table>
+
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#efefef" style="margin-bottom:10px; border-left:1px solid #d0d0d0; border-right:1px solid #d0d0d0; border-bottom:1px solid #d0d0d0;">
+      			<tr>
+        			<td width="140" style="padding:5px 0;">
+					<table border="0" cellspacing="0" cellpadding="0" style="margin-left:5px;">
+						<tr>
+							<!-- <td><img src="/image2006/default/btn_golist.gif" width="55" height="12"></td> //-->
+							<td><a href="javascript:fontPlus();" title="폰트키우기"><img src="/image2006/default/btn_textbig.gif" border="0" alt="폰트키우기"></a></td>
+							<td><a href="javascript:fontMinus();" title="폰트줄이기"><img src="/image2006/default/btn_textsmall.gif" border="0" alt="폰트줄이기"></a></td>
+							<td style="padding-left:5px;"><a href="javascript:articlePrint('403315');" title="프린트하기"><img src="/image2006/default/btn_print.gif" border="0" alt="프린트하기"></a></td>
+							<td><a href="javascript:articleMail('403315');" title="메일보내기"><img src="/image2006/default/btn_send.gif" border="0" alt="메일보내기"></a></td>
+							<td><a href="javascript:articleErr('403315');" title="신고하기"><img src="/image2006/default/btn_ermail.gif" border="0" alt="신고하기"></a></td>
+						</tr>
+					</table>
+					</td>
+					<td>
+					<div class="View_Time"><span>승인</span> 2012.08.23&nbsp;&nbsp;12:16:44</div>					</td>
+        			<td align="right">
+					
+					<table border="0" cellspacing="0" cellpadding="0" style="margin-right:5px;">
+						<tr>
+							<td><a href="http://twitter.com/home?status=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98+http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315" target="_blank" title="트위터"><img src="/image2006/default/Twitter.gif" border="0" alt="트위터"></a></td>
+							<td style="padding-left:3px;"><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315&t=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98" target="_blank" title="페이스북"><img src="/image2006/default/facebook.gif" border="0" alt="페이스북"></a></td>
+							<td style="padding-left:3px;"><a href="http://me2day.net/posts/new?new_post[body]=%22%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98%22%3Ahttp%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315&new_post[tags]=%EB%B6%80%EC%9A%B8%EA%B2%BD%EB%89%B4%EC%8A%A4" target="_blank" title="미투데이"><img src="/image2006/default/me2day.gif" border="0" alt="미투데이"></a></td>
+							<!-- <td style="padding-left:3px;"><a href="#" title="요즘" onclick="javascript:window.open('http://yozm.daum.net/api/popup/prePost?sourceid=&link=&prefix=', 'yozm', 'width=466, height=356' );returnfalse;"><img src="/image2006/default/yozm.gif" border="0" alt="요즘"></a></td> -->
+							<td style="padding-left:3px;"><a  title="네이버" href="http://bookmark.naver.com/post?ns=1&title=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98&url=http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315" target="_blank"><img src="/image2006/default/naver.gif" border="0" alt="네이버"></a></td>
+							<td style="padding-left:3px;"><a href="http://www.google.com/bookmarks/mark?op=add&title=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98&bkmk=http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315" target="_blank" title="구글"><img src="/image2006/default/google.gif" border="0" alt="구글"></a></td>
+							<td style="padding-left:3px;"><a href="http://profile.live.com/badge?url=http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315&text=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98" target="_blank" title="msn"><img src="/image2006/default/msn.gif" border="0" alt="msn"></a></td>
+													</tr>
+					</table>
+					</td>
+      			</tr>
+			</table>
+
+			<table width="690" border="0" cellpadding="10" cellspacing="1" bgcolor="#d0d0d0">
+        		<tr>
+          			<td bgcolor="#ffffff">
+
+
+					<table width="640" border="0" cellpadding="0" cellspacing="0" align="center">
+						<tr>
+							<td class="view_r" id="articleBody" itemprop="articleBody" style="padding:10px 0;">
+							<!--StartFragment-->
+<P class=바탕글><SPAN style="FONT-FAMILY: 휴먼명조; FONT-SIZE: 12pt; mso-ascii-font-family: HCI Poppy; mso-hansi-font-family: HCI Poppy">중구(구청장 박성민)는 야간 횡단보도 보행자의 교통사고를 획기적으로 줄이기 위해 복산초등학교 앞 등 관내 23곳의 횡단보도에 91개의 투광등을 설치했다고 23일 밝혔다.</SPAN>  <?xml:namespace prefix = o ns = "urn:schemas-microsoft-com:office:office" /><o:p></o:p></P>
+<P class=바탕글><SPAN style="FONT-FAMILY: 휴먼명조; FONT-SIZE: 12pt; mso-ascii-font-family: HCI Poppy; mso-hansi-font-family: HCI Poppy"></P>
+<DIV style="BORDER-BOTTOM: #cccccc 0px solid; BORDER-LEFT: #cccccc 0px solid; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 660px; PADDING-RIGHT: 0px; HEIGHT: 473px; BORDER-TOP: #cccccc 0px solid; BORDER-RIGHT: #cccccc 0px solid; PADDING-TOP: 0px"><IMG id=$sNS_2012823121253/393921739$e border=0 src="/news/photo/old/News/thumb_660_NS_2012823121253.jpg" width=660 height=473></DIV>
+<P class=바탕글>이번에 설치된 투광등은 내구성과 향후 전기요금등 유지비용을 감안해 에너지효율이 높은 LED등으로 설치했으며 전기요금은 등 개당 월 3,000원정도로 하루 100원꼴이다.</SPAN>  <o:p></o:p></P>
+<P class=바탕글><SPAN style="FONT-FAMILY: 휴먼명조; FONT-SIZE: 12pt; mso-ascii-font-family: HCI Poppy; mso-hansi-font-family: HCI Poppy">구 관계자는 “보행자가 횡단보도를 건널 때 운전자의 야간 식별이 용이하도록 투광등으로 밝게 비춰줌으로써 야간시간대 보행자 대상 사고발생률이 현저하게 줄어들 것으로 기대하고 있다”며 “투광등 설치는 도로상에서 예고 없이 순식간에 발생할 수 있는 사고를 방지해 주민의 목숨과 재산을 보호할 것이다“고 말했다.</SPAN>  <o:p></o:p></P>
+<P class=바탕글><SPAN style="FONT-FAMILY: 휴먼명조; FONT-SIZE: 12pt; mso-ascii-font-family: HCI Poppy; mso-hansi-font-family: HCI Poppy">중구에서는 2011년 한 해 동안 </SPAN><SPAN style="FONT-FAMILY: HCI Poppy; FONT-SIZE: 12pt; mso-hansi-font-family: HCI Poppy; mso-fareast-font-family: 휴먼명조" lang=EN-US>908건의 교통사고가 </SPAN><SPAN style="FONT-FAMILY: 휴먼명조; FONT-SIZE: 12pt; mso-ascii-font-family: HCI Poppy; mso-hansi-font-family: HCI Poppy">발생, 이</SPAN><SPAN style="FONT-FAMILY: 휴먼명조; FONT-SIZE: 12pt; mso-ascii-font-family: HCI Poppy; mso-hansi-font-family: HCI Poppy">중 459건이 해가 지는 오후 6시부터 다음날 새벽 6시까지 교통사고가 발생했고 </SPAN><SPAN style="FONT-FAMILY: 휴먼명조; FONT-SIZE: 12pt; mso-ascii-font-family: HCI Poppy; mso-hansi-font-family: HCI Poppy">사망자는 전체 11명중 9명으로 80%가 해당시간대에 발생했다.</SPAN></P>
+<P class=바탕글><SPAN style="FONT-FAMILY: 휴먼명조; FONT-SIZE: 12pt; mso-ascii-font-family: HCI Poppy; mso-hansi-font-family: HCI Poppy">이 가운데 횡단보도에서 횡단 중 발생한 사고는 103건이며 2명의 사망자와 108명의 부상자가 발생 했다.</SPAN></P>
+<P class=바탕글>  부울경신문 편집부</P>
+<P class=바탕글><o:p></o:p> </P>							</td>
+						</tr>
+												<tr>
+							<td class="view_copyright">&lt;저작권자 &copy; 부울경뉴스 무단전재 및 재배포금지&gt;</td>
+						</tr>
+						
+<!--추천위젯시작//-->
+				<tr>
+					<td height="15"></td>
+				</tr>
+				<tr>
+					<td align="center">
+										</td>
+				</tr>
+				<!--추천위젯끝//-->
+
+				<tr>
+					<td height="20"></td>
+				</tr>
+				<tr>
+					<td>
+						<table width="640" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td height="24" colspan="2" align="right"><img src="/image2006/default/icon_arrow.gif" width="10" height="10"><span style="font-size:9pt; line-height:5mm;"><a href="articleList.html?sc_area=I&sc_word=kijmaster"><font color="#666666">마스터의 다른기사 보기</font></a>&nbsp;&nbsp;</td>
+							</tr>
+												</table>
+					</td>
+				</tr>
+			</table>
+
+					</td>
+				</tr>
+			</table>
+
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#efefef" style="border-left:1px solid #d0d0d0; border-right:1px solid #d0d0d0; border-bottom:1px solid #d0d0d0;">
+      			<tr>
+        			<td style="padding:5px 0;">
+					<table border="0" cellspacing="0" cellpadding="0" style="margin-left:5px;">
+						<tr>
+							<!-- <td><img src="/image2006/default/btn_golist.gif" width="55" height="12"></td> //-->
+							<td><a href="javascript:fontPlus();" title="폰트키우기"><img src="/image2006/default/btn_textbig.gif" border="0" alt="폰트키우기"></a></td>
+							<td><a href="javascript:fontMinus();" title="폰트줄이기"><img src="/image2006/default/btn_textsmall.gif" border="0" alt="폰트줄이기"></a></td>
+							<td style="padding-left:5px;"><a href="javascript:articlePrint('403315');" title="프린트하기"><img src="/image2006/default/btn_print.gif" border="0" alt="프린트하기"></a></td>
+							<td><a href="javascript:articleMail('403315');" title="메일보내기"><img src="/image2006/default/btn_send.gif" border="0" alt="메일보내기"></a></td>
+							<td><a href="javascript:articleErr('403315');" title="신고하기"><img src="/image2006/default/btn_ermail.gif" border="0" alt="신고하기"></a></td>
+						</tr>
+					</table>
+					</td>
+        			<td align="right">
+					<table border="0" cellspacing="0" cellpadding="0" style="margin-right:5px;">
+						<tr>
+							<td><a href="http://twitter.com/home?status=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98+http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315" target="_blank" title="트위터"><img src="/image2006/default/Twitter.gif" border="0" alt="트위터"></a></td>
+							<td style="padding-left:3px;"><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315&t=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98" target="_blank" title="페이스북"><img src="/image2006/default/facebook.gif" border="0" alt="페이스북"></a></td>
+							<td style="padding-left:3px;"><a href="http://me2day.net/posts/new?new_post[body]=%22%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98%22%3Ahttp%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315&new_post[tags]=%EB%B6%80%EC%9A%B8%EA%B2%BD%EB%89%B4%EC%8A%A4" target="_blank" title="미투데이"><img src="/image2006/default/me2day.gif" border="0" alt="미투데이"></a></td>
+							<!-- <td style="padding-left:3px;"><a href="#" title="요즘" onclick="javascript:window.open('http://yozm.daum.net/api/popup/prePost?sourceid=&link=&prefix=', 'yozm', 'width=466, height=356' );returnfalse;"><img src="/image2006/default/yozm.gif" border="0" alt="요즘"></a></td> -->
+							<td style="padding-left:3px;"><a  title="네이버" href="http://bookmark.naver.com/post?ns=1&title=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98&url=http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315" target="_blank"><img src="/image2006/default/naver.gif" border="0" alt="네이버"></a></td>
+							<td style="padding-left:3px;"><a href="http://www.google.com/bookmarks/mark?op=add&title=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98&bkmk=http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315" target="_blank" title="구글"><img src="/image2006/default/google.gif" border="0" alt="구글"></a></td>
+							<td style="padding-left:3px;"><a href="http://profile.live.com/badge?url=http%3A%2F%2Fwww.bulgungnews.com%2Fnews%2FarticleView.html%3Fidxno%3D403315&text=%EC%9A%B8%EC%82%B0+%EC%A4%91%EA%B5%AC%EC%9D%98+%EB%B0%A4%EA%B1%B0%EB%A6%AC%EA%B0%80+%EB%B0%9D%EC%95%84%EC%A1%8C%EB%8B%A4.+%ED%9A%A1%EB%8B%A8%EB%B3%B4%EB%8F%84+%ED%88%AC%EA%B4%91%EB%93%B1+%EC%84%A4%EC%B9%98" target="_blank" title="msn"><img src="/image2006/default/msn.gif" border="0" alt="msn"></a></td>
+							<td style="padding-left:6px;"><a href="javascript:history.back();" title="뒤로가기"><img src="/image2006/default/btn_back2.gif" border="0"alt="뒤로가기"></a></td>
+							<td><a href="javascript:scroll(0,0);" title="위로가기"><img src="/image2006/default/btn_top.gif" border="0" alt="위로가기"></a></td>
+						</tr>
+					</table>
+					</td>
+      			</tr>
+			</table>
+
+			<table width="690" border="0" cellpadding="0" cellspacing="0"><tr height="20"><td></td></tr></table>
+
+<div class = "vote-container"></div>
+
+		<table width="690" class = "reply-write-container" border="0" cellspacing="0" cellpadding="10" style="border-top:1px solid #d0d0d0;" bgcolor="#fafafa">
+			<form name="articleReplyForm" method="post" action="articleReply.php">
+			<input type="hidden" name="prt_idxno" value="403315">
+        	<tr>
+          		<td height="36" style="border-bottom:1px solid #d0d0d0;" bgcolor="#f6f6f6">
+				<div class="View_SmFont FontKor Reply_View">이 기사에 대한 <strong>댓글 이야기</strong> <font class="FontEng">(0)</font></div>
+				</td>
+        	</tr>
+        	<tr>
+          		<td>
+				<table border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td><input type="text" name="name" value="" size="20" class="input1" onkeydown="clrImg(this)" onmousedown="clrImg(this)" style="height:22px; background:url(/image2006/admin/new/AdminCopy_Text.gif) no-repeat -5px -6px; background-color:#fff; padding:4px 6px;"></td>
+						<td style="padding-left:5px;"><input type="password" name="password" size="20" class="input1" onkeydown="clrImg(this)" onmousedown="clrImg(this)" style="height:22px; background:url(/image2006/admin/new/AdminCopy_Text.gif) no-repeat -5px -66px; background-color:#fff; padding:4px 6px;"></td>
+											<td style="padding-left:5px;">
+						<script src="/kcaptcha/js/jquery-1.5.min.js" type="text/javascript"></script>
+						<script type="text/javascript" src="/kcaptcha/js/md5.js"></script>
+						<script type="text/javascript" src="/kcaptcha/js/jquery.kcaptcha.js"></script>
+						<font class="View_SmFont FontKor">자동등록방지용 코드를 입력하세요!</font> <img id="kcaptcha_image" border="1" style="cursor:pointer;" class="input1" align="absmiddle">&nbsp;&nbsp;<input class="input1" type="input" name="writekey" id="writekey" style="height:18px;width:45px;text-align:center;ime-mode:active;" maxlength="4">
+						</td>
+					</tr>
+									</table>
+
+				<table border="0" cellspacing="0" cellpadding="0"  style="margin-top:5px;">
+					<tr>
+						<td width="600"><textarea name="content" id="content" rows="4" class="input1" onKeyUp="checkMsgLength('content','nbyte1',400); var m=50;var s=this.scrollHeight;if(s>=m)this.style.pixelHeight=s+4;" style="overflow:hidden; width:595px; height:50px; padding:5px 5px;"></textarea></td>
+						<td width="80" style="border:1px solid #d0d0d0; text-align:center; background-color:#fff; cursor:pointer;" onclick="javascript:articleReplySubmit2(document.articleReplyForm);"><strong style="color:#404040;">확인</strong></td>
+					</tr>
+				</table>
+
+				<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:5px;">
+					<tr>
+						<td class="View_SmFont FontKor" style="line-height:160%;">
+						- <!--<strong>의견쓰기는 로그인후에 가능하며,</strong>//--><strong><font class="FontEng">200</font>자까지 쓰실 수 있습니다.</strong> (현재 <font class="FontEng"><span id='nbyte1'>0</span> byte</font> / 최대 <font class="FontEng">400byte</font>)<br>
+						- 욕설등 인신공격성 글은 삭제 합니다. <strong>[운영원칙]</strong>
+						</td>
+					</tr>
+				</table>
+			</td>
+        	</tr>
+			</form>
+		</table>
+
+		<table width="690" border="0" cellspacing="0" cellpadding="0" style="border-top:1px solid #d0d0d0;">
+        	<tr>
+          		<td style="padding:0 10px;">
+							</td>
+        </tr>
+        <tr>
+			<td align="center" height="36" style="border-top:1px solid #d0d0d0; border-bottom:1px solid #d0d0d0;" bgcolor="#f6f6f6"><div class="View_SmFont FontKor">이 기사에 대한 <strong>댓글 이야기</strong> <font class="FontEng">(0)</font></div></td>
+        </tr>
+	</table>
+
+<!-- 실명제 체크 -->
+<script type="text/javascript" src="/vote/vote.js"></script>
+<script>
+	vote.voteCheck(
+		jQuery('.reply-write-container'),	// 폐쇄시 제거할 영역
+		'S',								// 실명제 구분값(@A:pc버전, @B모바일버전)
+		'/SubMain/News/News_View.asp'	// 리턴URL 
+	);
+</script>
+  		
+<!--s1--><script language="javascript" src="/adControl/inc/1.js"></script><!--s1-->
+		<center style="margin:15px 0;">
+			<!-- AD Plus Script Start (부울경뉴스 쇼핑플러스 6타입) -->
+			<script language="javascript" src="http://adimg.wisenut.co.kr/common/js/amc/wiseAdSvc.pj?code=44c70c670de865b5d8d291a4a015cfc2" type="text/javascript"></script>
+			<!-- AD Plus Script End -->
+		</center>
+
+		</td>
+		<td width="20"></td>
+		<td width="250" align="right" valign="top">
+
+
+<table align="center" cellpadding="0" cellspacing="0" width="250">	
+			
+			</table><table width="250" border="0" cellspacing="0" cellpadding="0" align="center" class="boxFootBig boxLineSol">
+<tr>
+<td height="35" class="boxTitleNormal boxWidthPad">
+<strong class="boxFootSol" style="display:block; height:35px; line-height:3em;"><font color="red">최근</font>인기기사</strong>
+</td>
+</tr>
+<tr>
+<td valign="top" height="50" class="boxConSm"><div class="ArticleNew"><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="red num">1</div><div><a href="/news/articleView.html?idxno=534830" target="_top" class="FtColor_typeA OnLoad"><오늘의 자작추천시> 김상환, 비가 아비가 있느냐</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="red num">2</div><div><a href="/news/articleView.html?idxno=534829" target="_top" class="FtColor_typeA OnLoad"><오늘의 신작시> 김병호, 친구</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="red num">3</div><div><a href="/news/articleView.html?idxno=534828" target="_top" class="FtColor_typeA OnLoad">기장군선관위, 메니페스토 실천 서약식 및 후보자 회의 개최</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="num">4</div><div><a href="/news/articleView.html?idxno=534827" target="_top" class="FtColor_typeA OnLoad">진주소방서, 안전문화 정착을 위한 한국119소년단 발대식  개최</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="num">5</div><div><a href="/news/articleView.html?idxno=534826" target="_top" class="FtColor_typeA OnLoad">금정구·금정경찰서, 부산 최초 마이(MY) 비상벨 보급</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="num">6</div><div><a href="/news/articleView.html?idxno=534825" target="_top" class="FtColor_typeA OnLoad">부산 북구 화명1동 새마을지도자협의회, 취약계층 「LED 전등교체」</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="num">7</div><div><a href="/news/articleView.html?idxno=534824" target="_top" class="FtColor_typeA OnLoad">경남도, 여름철 산림 내 불법행위 특별단속 실시</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="num">8</div><div><a href="/news/articleView.html?idxno=534823" target="_top" class="FtColor_typeA OnLoad">경남도, 벼 재해보험 가입 홍보에 팔 걷었다</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="num">9</div><div><a href="/news/articleView.html?idxno=534822" target="_top" class="FtColor_typeA OnLoad">경남도, 제23회 바다의 날 및 대규모 해양 쓰레기 정화 주간 행사 추진</a></div></h5><h5 class="TabHotNew" style="margin-bottom:7px; height:15px; line-height:15px;"><div class="num">10</div><div><a href="/news/articleView.html?idxno=534821" target="_top" class="FtColor_typeA OnLoad">경남도, 양산·어곡 일반산업단지 입주 중소기업 현장 방문</a></div></h5></div></td>
+</tr>
+</table><table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td align="center"><script type='text/javascript'>
+<!--//<![CDATA[
+document.MAX_ct0 ='';
+var m3_u = (location.protocol=='https:'?'https://cas.criteo.com/delivery/ajs.php?':'http://cas.criteo.com/delivery/ajs.php?');
+var m3_r = Math.floor(Math.random()*99999999999);
+document.write ("<scr"+"ipt type='text/javascript' src='"+m3_u);
+document.write ("zoneid=759630");document.write("&amp;nodis=1");
+document.write ('&amp;cb=' + m3_r);
+if (document.MAX_used != ',') document.write ("&amp;exclude=" + document.MAX_used);
+document.write (document.charset ? '&amp;charset='+document.charset : (document.characterSet ? '&amp;charset='+document.characterSet : ''));
+document.write ("&amp;loc=" + escape(window.location));
+if (document.referrer) document.write ("&amp;referer=" + escape(document.referrer));
+if (document.context) document.write ("&context=" + escape(document.context));
+if ((typeof(document.MAX_ct0) != 'undefined') && (document.MAX_ct0.substring(0,4) == 'http')) {
+document.write ("&amp;ct0=" + escape(document.MAX_ct0));
+}
+if (document.mmm_fo) document.write ("&amp;mmm_fo=1");
+document.write ("'></scr"+"ipt>");
+//]]>-->
+</script></td>
+			</tr>
+		</table><table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td align="center"><div style="margin-bottom:15px;"></div></td>
+			</tr>
+		</table><table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td align="center"><script src="http://ad.tjtune.com/cgi-bin/PelicanC.dll?impr?pageid=05vN&out=script"></script></td>
+			</tr>
+		</table><table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td align="center"><div style="margin-bottom:15px;"></div></td>
+			</tr>
+		</table><table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td align="center"><!--s2--><script language="javascript" src="/adControl/inc/2.js"></script><!--s2--></td>
+			</tr>
+		</table>		</td>
+	</tr>
+</table>
+</div>
+
+<table width="960" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;" align="center">
+	<tr>
+		<td style="padding:10px 0; border-top:1px solid #ddd; border-bottom:1px solid #ddd;">
+		<table width="940" border="0" cellspacing="0" cellpadding="0" align="center">
+			<tr>
+				<td class="dncom">
+				<a href="http://www.bulgungnews.com/com/com-1.html" onfocus="this.blur()">신문사소개</a>ㆍ<a href="http://www.bulgungnews.com/com/jb.html" onfocus="this.blur()">기사제보</a>ㆍ<a href="http://www.bulgungnews.com/com/ad.html" onfocus="this.blur()">광고문의</a>ㆍ<a href="http://www.bulgungnews.com/com/bp.html" onfocus="this.blur()">불편신고</a>ㆍ<a href="javascript:void(window.open('http://www.bulgungnews.com/com/privacy.html','privacy','width=800, height=600, scrollbars=yes'))" onfocus="this.blur()">개인정보취급방침</a>ㆍ<a href="javascript:void(window.open('http://www.bulgungnews.com/com/pop_emailno.html','new_win','resizable=no,width=550,height=252,scrollbars=no'))" onfocus="this.blur()">이메일무단수집거부</a>ㆍ<a href="http://www.bulgungnews.com/com/teen.html" onfocus="this.blur()">청소년보호정책</a>
+				</td>
+				<td width="250" align="right">
+				<table border="0" cellpadding="0" cellspacing="0">
+					<tr>
+						<td><a href="http://www.bulgungnews.com/rss/" onFocus="this.blur();"><img src="/image2006/rss_b.gif" border="0"></a></td>
+						<td><a href="http://www.bulgungnews.com" onfocus="this.blur()"><img src="/image2006/dn_iconhome.gif" border="0"></a></td>
+						<td><a href="javascript:history.back()" onfocus="this.blur();"><img src="/image2006/dn_iconback.gif"  border="0"></a></td>
+						<td><a href="#top" onfocus="this.blur();"><img src="/image2006/dn_icontop.gif" border="0"></a></td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+		<td style="padding:10px 0;">
+		<table width="960" border="0" cellspacing="0" cellpadding="0" align="center">
+			<tr>
+				<td width="150" align="center"><img src="/image2006/logo_dn.gif"></td>
+				<td class="dncopy">
+				부산광역시 기장군 기장읍 차성로303(동부리 187-1)/3F&nbsp;&nbsp;|&nbsp;&nbsp;대표전화 : 051-722-0316&nbsp;&nbsp;|&nbsp;&nbsp;이메일 : <a href="mailto:anteajun@naver.com">anteajun@naver.com</a>, <a href="mailto:teajunan@hanmail.net">teajunan@hanmail.net</a><br>
+				정기간행물ㆍ등록번호 : 부산 아 00031&nbsp;&nbsp;|&nbsp;&nbsp;등록일 : 2009.3.17&nbsp;&nbsp;|&nbsp;&nbsp;편집·발행인 : 안태준&nbsp;&nbsp;|&nbsp;&nbsp;부울경뉴스 협동조합 : 안태준&nbsp;&nbsp;|&nbsp;&nbsp;청소년보호정책(책임자 : 안태준)<br>
+				C<a href="http://www.bulgungnews.com/admin/adminLoginForm.html">o</a>pyright <a href="http://www.bulgungnews.com/weblog/webmail.html" target="_blank">&copy;</a> 2013 부울경뉴스. All rights reserved.
+				</td>
+				<td width="60" valign="bottom" align="right"><a href="http://www.ndsoft.co.kr" target="_blank" onfocus="this.blur()"><img src="/image2006/ndsoft.gif" border="0"></a></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
