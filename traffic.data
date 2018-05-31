@@ -1,0 +1,7 @@
+classes = 2
+train = data/traffic_light/train.txt
+valid = data/traffic_light/train.txt
+names = data/traffic_light/obj.names
+backup = backup
+
+
