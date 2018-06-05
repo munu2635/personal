@@ -16,9 +16,6 @@ buf:
 	.long	6
 	.long	8
 	.long	9
-	.section	.rodata
-.LC0:
-	.string	"%d, "
 	.text
 	.globl	main
 	.type	main, @function
@@ -31,21 +28,35 @@ main:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
-	movl	$0, -4(%rbp)
+	movl	$0, -12(%rbp)
 	jmp	.L2
-.L3:
+.L5:
 	movl	-4(%rbp), %eax
+	subl	$1, %eax
+	cltq
+	leaq	0(,%rax,4), %rdx
+	leaq	buf(%rip), %rax
+	movl	(%rdx,%rax), %edx
+	movl	-4(%rbp), %eax
+	cltq
+	leaq	0(,%rax,4), %rcx
+	leaq	buf(%rip), %rax
+	movl	%edx, (%rcx,%rax)
+.L3:
+	movl	-12(%rbp), %eax
+	subl	$1, %eax
 	cltq
 	leaq	0(,%rax,4), %rdx
 	leaq	buf(%rip), %rax
 	movl	(%rdx,%rax), %eax
-	movl	%eax, %esi
-	leaq	.LC0(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	addl	$1, -4(%rbp)
+	cmpl	%eax, -8(%rbp)
+	jge	.L4
+	cmpl	$0, -4(%rbp)
+	jg	.L5
+.L4:
+	addl	$1, -12(%rbp)
 .L2:
-	cmpl	$9, -4(%rbp)
+	cmpl	$9, -12(%rbp)
 	jle	.L3
 	movl	$0, %eax
 	call	a
@@ -57,7 +68,7 @@ main:
 .LFE0:
 	.size	main, .-main
 	.section	.rodata
-.LC1:
+.LC0:
 	.string	"everything ok"
 	.text
 	.globl	a
@@ -70,9 +81,9 @@ a:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	leaq	.LC1(%rip), %rdi
+	leaq	.LC0(%rip), %rdi
 	call	puts@PLT
-	leaq	.LC1(%rip), %rdi
+	leaq	.LC0(%rip), %rdi
 	call	puts@PLT
 	nop
 	popq	%rbp

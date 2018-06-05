@@ -29,12 +29,15 @@ int buf[MAX] = { 3, 5, 2, 1, 4, 7, 10, 6, 8, 9 };
 //	.type	main, @funtion
 
 void main(){
-	int i;
+	int i, j, dummy;
 	//make ather
 	for(i = 0; i<MAX ;i++){
-		printf("%d, ", buf[i]);
-
+		 while (buf[i-1] > dummy && j >  0 ){
+			 buf[j] = buf[j-1];
+		}
 	}
+
+
 //	leaq 0(,%rax,4), %rcx
 //	leaq buf(%rip), %raxs
 //	movl (%rdx, %rax), %eax

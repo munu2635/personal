@@ -53,7 +53,31 @@ void QuickSort(int data[], int left, int right) {
 		QuickSort(data, i+1, right);
 	}
 }
+void Quick(int left, int right) {
+	int i, j, num, temp;
 
+	if(right > left){
+		num = Buf[right];
+		i = left - 1;
+		j = right;
+
+		while(TRUE){
+			while(Buf[++i] < num);
+			while(Buf[--j] > num);
+			if(i >= j)
+				break;
+			temp = Buf[i];
+			Buf[i] = Buf[j];
+			Buf[j] = temp;
+		}
+		temp = Buf[i];
+		Buf[i] = Buf[right];
+		Buf[right] = temp;
+
+		Quick(left, i-1);
+		Quick(i+1, right);
+	}
+}
 void DisplayBuffer() {
 	int i;
 
@@ -84,7 +108,7 @@ void main() {
 	MakeRandomNumber();
 	DisplayBuffer();
 	printf("정렬 후 데이터 초기화\n");
-
+	Quick(0, MAX-1);
 	QuickSort(Buf, 0, MAX-1);
 	DisplayBuffer();
 
