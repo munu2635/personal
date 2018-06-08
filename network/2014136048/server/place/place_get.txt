@@ -1,0 +1,1 @@
+we send message in server/place "place_get.txt"
