@@ -1,1 +1,0 @@
-we send message in cilent "put.txt"
