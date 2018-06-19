@@ -15,10 +15,10 @@ import java.util.Date;
 // 추가사항
 
 public class TextFileManager {
-    long now = System.currentTimeMillis();
-    Date date = new Date(now);
+    Date date = new Date(System.currentTimeMillis());
     SimpleDateFormat mFo = new SimpleDateFormat("yyyy-MM-dd"); //출력의 모습을 설정
     String now_date = mFo.format(date);
+
     private static String FILE_NAME; //파일저장할 이름
     private File folder;
     private String folderPath;
@@ -37,6 +37,7 @@ public class TextFileManager {
     public void create(){
 
     }
+
     // 파일에 문자열 데이터를 쓰는 메소드
     public void save(String data) {
         if (data == null || data.isEmpty() == true) {
@@ -74,6 +75,7 @@ public class TextFileManager {
         }
         return "";
     }
+
     // 파일 삭제 메소드
     public boolean delete() {
         // 로그 파일의 절대 경로를 이용하여 File 객체 생성

@@ -37,8 +37,8 @@ package com.example.laply.msp_project;
 // ap 값 측정하기
 // 화면이 꺼진 상태에서 데이터
 
-// 집에 가서 -> 마무리하고 기능 작동 잘되는지 마무리 테스트 + ppt 작성
-// 내일 아침 직접테스트 위치
+// 집에 가서 -> 마무리하고 기능 작동 잘되는지 마무리 테스트 + ppt 작성 + Battery Historian을 사용하여 자원 사용 정보 얻기
+// 내일 아침 직접테스트 위치 + 사용 하는 거 캡쳐 마무리
 
 import android.Manifest;
 import android.app.AlarmManager;
@@ -106,17 +106,20 @@ public class MainService extends Service {
     private static final long periodForMoving = 5000;
     private static final long periodIncrement = 5000;
     private static final long periodMax = 10000;
-    int CHECK_WHAT_TO_DO = 0;       // 어떤 일을 해야하는지 알려주는 변수         - 1. movestart, 2. movestop, 3. staystart, 4. staystop, 0. null
-    int base = CHECK_WHAT_TO_DO;    // CHECK_WHAT_TO_DO의 변화 확인하는 변수
-    int place = 0;                  // 체류일때 어떻게 체류하는지 알려주는 변수    - 1. 지정 실내, 2.지정 실외, 3. 실내 , 4. 실외,  0. null
-    int ap_location = 0;            // 지정 실내일때 어느 위치 인지 확인하는 변수  - 1. 4층 교실, 2. 다산 1층
-    int gps_location = 0;           // 지정 실외일때 어느 위치 인지 확인하는 변수  - 1. 운동장, 2. 텔동
-    Date starttime, endtime;        // 움직인, 체류한 시간을 계산하는데 사용하는 변수
-    long staytime = 0, movetime = 0;
-    String start_date, end_date;
+
+    // 분기점 변수들
+    int CHECK_WHAT_TO_DO = 0;        // 어떤 일을 해야하는지 알려주는 변수         - 1. movestart, 2. movestop, 3. staystart, 4. staystop, 0. null
+    int base = CHECK_WHAT_TO_DO;     // CHECK_WHAT_TO_DO의 변화 확인하는 변수
+    int place = 0;                   // 체류일때 어떻게 체류하는지 알려주는 변수    - 1. 지정 실내, 2.지정 실외, 3. 실내 , 4. 실외,  0. null
+    int ap_location = 0;             // 지정 실내일때 어느 위치 인지 확인하는 변수  - 1. 4층 교실, 2. 다산 1층
+    int gps_location = 0;            // 지정 실외일때 어느 위치 인지 확인하는 변수  - 1. 운동장, 2. 텔동
+    Date starttime, endtime;         // 움직인, 체류한 시간을 계산하는데 사용하는 변수
+    long staytime = 0, movetime = 0; // 움직인 체류한 시간을 출력하는데 사용하는 변수 (( 단위 - 초 ) 머무른 시간 계산하는데 사용 )
+    String start_date, end_date;     // 움직인 체류한 시간을 출력하는데 사용하는 변수 ( HH:mm ~ HH:mm )
+
+    //시간 데이터
     Date date = new Date(System.currentTimeMillis());
     SimpleDateFormat mFo = new SimpleDateFormat("HH:mm"); //출력의 모습을 설정
-    String now_date = mFo.format(date);
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -578,8 +581,7 @@ public class MainService extends Service {
             if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
                 Log.d(LOGTAG, " wifi - scan되고 어디 인지 확인 ");
                 // 검색이 되었을 때 기준으로 값을 출력하기 위해 사용하였다.
-                date = new Date(System.currentTimeMillis());
-                now_date = mFo.format(date);
+
                 ScanResults();
                 Log.d(LOGTAG, "스캔 값에 따른 변화 place - " + place+" ap_location - " + ap_location );
                 if ( place == 0 ) { StartGps(); EndWifi(); } // 와이파이 위치 검출이 안됬을때 gps 수행 - 순서 2

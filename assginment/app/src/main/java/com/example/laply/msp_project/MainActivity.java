@@ -27,9 +27,7 @@ public class MainActivity extends AppCompatActivity {
     TextView logText, timeText;
     TextFileManager mFileMgr;
 
-
-    long now = System.currentTimeMillis();
-    Date date = new Date(now);
+    Date date = new Date(System.currentTimeMillis());
     SimpleDateFormat mFo = new SimpleDateFormat("yyyy-MM-dd"); //출력의 모습을 설정
     String now_date = mFo.format(date);
 
