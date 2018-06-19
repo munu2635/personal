@@ -1,0 +1,395 @@
+<html>
+
+<head>
+    <!-- <META HTTP-EQUIV="refresh" CONTENT="15"> -->
+    <!--
+    최신값에 대한 접근을 해야한다. http://192.168.0.8:7579/Mobius/mobius/car2?fu=1 -> 각차에 대한 최신 값을 받아올수 있음. ok
+    저 값을 받아온 이후에 주소/~최신값 ->차의 배터리 위도 경도 값을 받아올 수 있음 ok 
+    
+   0. 차량 km 20이하인 경우에 새로운 알람을 생성해야함. -> 데이터베이스에 지속적인 접근이 필요(파싱부분) -> 데이터베이스 부분의 refresh가 필요하다. <script> 에대한 리프레시가 적용되야할것같다.
+
+   1-1. 충전소에 대한 디비접근 후에 거리를 구해야함 -> 데이터베이스 접근 & 알고리즘 생성 후 경로탐색 바로
+   ===================================================================================================
+   1-2. 경로탐색에 대해서는 tmap을 쓸것.->현재위도,경도에 대한 것을 토대로 경로탐색을 시행(경로검색을 따로 한후 그에맞는 위도경도를 받은 뒤 )
+
+   
+
+    충전 후에는 배터리를 충전했다고 알람이 뜨도록 해야하는데 이렇게 하려면 모비우스 컨테이너에 다시한번 접근해서 km값을 올려주는 코드를 생산해야 한다.
+    -> 즉, 또한 충전했을asd 때 km에 대한 정보를 올리기 위해서 모비우스 컨테이너에 접근할 수 있어야 하는데 어려울 것 같다. -> 가장마지막에 구현하는걸로
+
+    버려야 할 것 -> 충전에 걸리는 남은시간, 충전소에 몇개의 충전기가 있는가.
+    ->구현가능하면 하자
+   
+-->
+    <!--bootstrap cdn-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+        crossorigin="anonymous">
+
+
+    <!--jquery & tmap appkey -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>simpleMap</title>
+    <script src="https://api2.sktelecom.com/tmap/js?version=1&format=javascript&appKey=697870fc-4410-4ace-a2de-525221b9667f"></script>
+
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+
+</head>
+
+<body>
+    <div class="jumbotron">
+
+        <div class="row">
+            <div id="map_div" class="col-md-9">
+            </div>
+            <div class="col-md-3">
+                <div class="card border-success mb-3">
+                    <div class="card-header">
+                        현재 차량 상태
+                    </div>
+                    <div class="card-body">
+
+                        차량번호 :
+                        <span id="car_number"></span>
+                        <hr> 위도 :
+                        <span id="lat_info_car"></span>
+                        <hr> 경도 :
+                        <span id="lon_info_car"></span>
+                        <hr> 주행가능한 거리 :
+                        <span id="km_info_car"></span> km
+                        <hr> 현재 시간 :
+                        <span id="time"></span>
+
+                    </div>
+                </div>
+                <div class="card border-success mb-3">
+                    <div class="card-header">
+                        전기 충전소 정보
+                    </div>
+                    <div class="card-body">
+                        충전소 이름 :
+                        <span id="station_name"></span>
+                        <hr> 위도 :
+                        <span id="lat_info_station"></span>
+                        <hr> 경도 :
+                        <span id="lon_info_station"></span>
+                        <hr> 급속 충전기 개수 :
+                        <span id="rapid"></span>
+                        <hr> 완속 충전기 개수 :
+                        <span id="slow"></span>
+                        <hr> 직선 거리 :
+                        <span id="distance"></span> km
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+
+        setInterval(function () {
+            var d = new Date();
+            d.getFullYear() + (d.getMonth() + 1) + d.getDate() + d.getHours() + d.getMinutes() + d.getSeconds();
+
+            document.getElementById("time").innerHTML = d;
+        }, 600);
+
+
+    </script>
+    <script>
+        var cnt = 0;
+        var map_var = 3;
+        //전기차 데이터 받아오기
+        xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "./assets/data.xml", false); //전기차 충전소의 데이터를 가져옴 -> 위도,경도,이름,급속,완속충전기 갯수
+        xhttp.send();
+        objDoc = xhttp.responseXML;
+        //console.log(objDoc)
+        var objRootNode;
+
+        objRootNode = objDoc.documentElement;
+        //   console.log(objRootNode.innerHTML)
+
+        parser = new DOMParser();
+
+        xmlDoc_xml = parser.parseFromString(objRootNode.outerHTML, "text/xml");
+        // console.log(xmlDoc_xml.getElementsByTagName('station')) xml의 정보를 보기위한 콘솔화면
+
+
+        var lat_arr = [];
+        var lon_arr = [];
+        var slow_arr = [];
+        var fast_arr = [];
+
+        for (var i = 0; i < 1063; i++) {//xml에서 뽑아온 데이터
+            lon_arr[i] = parseFloat(xmlDoc_xml.getElementsByTagName('station')[i].childNodes[27].innerHTML);
+            lat_arr[i] = parseFloat(xmlDoc_xml.getElementsByTagName('station')[i].childNodes[29].innerHTML);
+            slow_arr[i] = parseInt(xmlDoc_xml.getElementsByTagName('station')[i].childNodes[9].innerHTML);
+            fast_arr[i] = parseInt(xmlDoc_xml.getElementsByTagName('station')[i].childNodes[11].innerHTML);
+        }
+
+
+        setInterval(
+            function () {
+                if (cnt > 0) {
+                    var divId = document.getElementsByTagName('div');
+                    document.getElementById(divId[map_var].id).style.display = "none";
+                    console.log("지운 div:" + divId[map_var].id)
+                    map_var += 20;
+
+                }
+
+                var xhr_data = new XMLHttpRequest();
+                xhr_data.onreadystatechange = function () {
+                    if (xhr_data.readyState == 4 && xhr_data.status == 200) {
+                        // mobius 컨테이너에 접속하여 저장되어있는 값들을 읽는다.
+
+                        parser = new DOMParser();
+
+                        xmlDoc = parser.parseFromString(xhr_data.responseText, "text/xml");
+
+                        // 특정 테그를 기준으로 변수에 담는다
+                        var xml = xmlDoc.getElementsByTagName('m2m:uril');
+
+                        var list = [];
+                        list = xml[0].innerHTML.split(" ");
+
+                        console.log("컨테이너 값 : " + list[0])//list[0]은 가장최신의 값을 받아온다.-> 차의 정보
+
+                        var xhr_data_list = new XMLHttpRequest();
+                        xhr_data_list.onreadystatechange = function () {
+                            if (xhr_data_list.readyState == 4 && xhr_data_list.status == 200) {
+
+                                // 1. 지도 띄우기
+                                map = new Tmap.Map({
+                                    div: 'map_div',
+                                    width: "80%",
+                                    height: "80%",
+                                });
+
+                                parser = new DOMParser();
+
+                                xmlDoc = parser.parseFromString(xhr_data_list.responseText, "text/xml");
+
+                                // 특정 테그를 기준으로 변수에 담는다
+                                var xml = xmlDoc.getElementsByTagName('con');
+
+                                list = JSON.parse(xml[0].textContent);//텍스트문서를 파싱하여 json파일로 변경
+                                //console.log(list.value);//cin값-> 스트링으로 나옴-> 차량 데이터 값 & 주행거리 & 위도
+
+                                var result = [];//문자열을 스페이스바 구분으로 나눈다.
+                                result = list.value.split(" ");
+
+                                //console.log(result);
+                                //모비우스에서 받아온 데이터를 변수화 한다.
+                                var car_num = parseInt(result[0].substring(8, 12));
+                                console.log("car_num : " + car_num)
+                                var lat = parseFloat(result[1].substring(4, 22));
+                                console.log("lat : " + lat)
+                                var lon = parseFloat(result[2].substring(4, 22));
+                                console.log("lon : " + lon)
+                                var km = parseFloat(result[3].substring(3, 19));
+                                console.log("km : " + km)
+
+                                var name = [];
+                                var temp_num = [];
+                                var min, min_index;
+
+                                for (var i = 0; i < 1063; i++) {
+                                    name[i] = xmlDoc_xml.getElementsByTagName('station')[i].childNodes[1].innerHTML;
+                                    temp_num[i] = Math.sqrt((110 * Math.abs(lat - lat_arr[i])) * (110 * Math.abs(lat - lat_arr[i])) + (88 * Math.abs(lon - lon_arr[i])) * (88 * Math.abs(lon - lon_arr[i])));
+                                    //가장 가까운지 아닌지//직선거리를 구하는 코드
+                                }
+
+                          
+                                min = temp_num[0];
+                                for (var i = 1; i < 1063; i++) {
+                                    if ((slow_arr[i] + fast_arr[i]) != 0) {
+                                        if (min > temp_num[i]) {
+                                            min = temp_num[i];
+                                            min_index = i;
+                                        }
+                                    }
+                                }
+
+                                //가장가까운 충전소 출력
+                                console.log("min_index= " + min_index)
+                                var lat_arrive = lat_arr[min_index];
+                                var lon_arrive = lon_arr[min_index];
+                                console.log("충전소 위치 : " + name[min_index])
+                                console.log("lat_arr : " + lat_arr[min_index])
+                                console.log("lon_arr : " + lon_arr[min_index])
+
+                                // =========================================================================================
+                                //html에 값 입히기
+                                document.getElementById('car_number').innerHTML = car_num;
+                                document.getElementById('lat_info_car').innerHTML = lat;
+                                document.getElementById('lon_info_car').innerHTML = lon;
+                                document.getElementById('km_info_car').innerHTML = km;
+
+                                document.getElementById('station_name').innerHTML = name[min_index];
+                                document.getElementById('lat_info_station').innerHTML = lat_arr[min_index];
+                                document.getElementById('lon_info_station').innerHTML = lon_arr[min_index];
+                                document.getElementById('rapid').innerHTML = fast_arr[min_index];
+                                document.getElementById('slow').innerHTML = slow_arr[min_index];
+                                document.getElementById('distance').innerHTML = temp_num[min_index];
+
+                                // =========================================================================================
+
+                                map.setCenter(new Tmap.LonLat(lat, lon).transform("EPSG:4326", "EPSG:3857"), 15);
+                                var routeLayer = new Tmap.Layer.Vector("route");
+                                map.addLayer(routeLayer);
+
+                                // 2. 시작, 도착 심볼찍기
+                                // 시작
+
+                                var markerStartLayer = new Tmap.Layer.Markers("start");
+                                map.addLayer(markerStartLayer);
+                                if (size) {
+                                    size = null;
+                                }
+                                var size = new Tmap.Size(24, 38);
+                                var offset = new Tmap.Pixel(-(size.w / 2), -size.h);
+                                var icon = new Tmap.IconHtml("<img src='http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png' />", size, offset);
+                                var marker_s = new Tmap.Marker(new Tmap.LonLat(lat, lon).transform("EPSG:4326", "EPSG:3857"), icon);
+                                markerStartLayer.addMarker(marker_s);
+
+                                // 도착
+                                var markerEndLayer = new Tmap.Layer.Markers("end");
+                                map.addLayer(markerEndLayer);
+
+
+                                var size = new Tmap.Size(24, 38);
+                                var offset = new Tmap.Pixel(-(size.w / 2), -size.h);
+                                var icon = new Tmap.IconHtml("<img src='http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png' />", size, offset);
+                                var marker_e = new Tmap.Marker(new Tmap.LonLat(lat_arrive, lon_arrive).transform("EPSG:4326", "EPSG:3857"), icon);
+                                markerEndLayer.addMarker(marker_e);
+
+                                // 4. 경로 탐색 API 사용요청
+                                var startX = lat;
+                                var startY = lon;
+                                var endX = lat_arrive;
+                                var endY = lon_arrive;
+                                var prtcl;
+                                var headers = {};
+                                headers["appKey"] = "697870fc-4410-4ace-a2de-525221b9667f";
+                                $.ajax({
+                                    method: "POST",
+                                    headers: headers,
+                                    url: "https://api2.sktelecom.com/tmap/routes?version=1&format=xml",//
+                                    async: false,
+                                    data: {
+                                        startX: startX,
+                                        startY: startY,
+                                        endX: endX,
+                                        endY: endY,
+
+                                        reqCoordType: "WGS84GEO",
+                                        resCoordType: "EPSG3857",
+                                        angle: "172",
+                                    },
+                                    success: function (response) {
+                                        prtcl = response;
+
+                                        // 5. 경로 탐색  결과 Line 그리기
+                                        //경로 탐색  결과 POINT 찍기
+                                        /* -------------- Geometry.Point -------------- */
+                                        var pointLayer = new Tmap.Layer.Vector("point");
+                                        var prtclString = new XMLSerializer().serializeToString(prtcl);//xml to String	
+                                        xmlDoc = $.parseXML(prtclString),
+                                            $xml = $(xmlDoc),
+                                            $intRate = $xml.find("Placemark");
+                                        var style_red = {
+                                            fillColor: "#FF0000",
+                                            fillOpacity: 0.2,
+                                            strokeColor: "#FF0000",
+                                            strokeWidth: 3,
+                                            strokeDashstyle: "solid",
+                                            pointRadius: 2,
+                                            title: "this is a red line"
+                                        };
+                                        $intRate.each(function (index, element) {
+                                            var nodeType = element.getElementsByTagName("tmap:nodeType")[0].childNodes[0].nodeValue;
+                                            if (nodeType == "POINT") {
+                                                var point = element.getElementsByTagName("coordinates")[0].childNodes[0].nodeValue.split(',');
+                                                var geoPoint = new Tmap.Geometry.Point(point[0], point[1]);
+                                                var pointFeature = new Tmap.Feature.Vector(geoPoint, null, style_red);
+                                                pointLayer.addFeatures([pointFeature]);
+                                            }
+                                        });
+                                        map.addLayer(pointLayer);
+                                        /* -------------- Geometry.Point -------------- */
+                                        //경로 탐색  결과 Line 그리기
+                                        routeLayer.style = {
+                                            fillColor: "#FF0000",
+                                            fillOpacity: 0.2,
+                                            strokeColor: "#FF0000",
+                                            strokeWidth: 3,
+                                            strokeDashstyle: "solid",
+                                            pointRadius: 2,
+                                            title: "this is a red line"
+                                        }
+                                        var kmlForm = new Tmap.Format.KML().read(prtcl);
+                                        routeLayer.addFeatures(kmlForm);
+
+                                        // 6. 경로탐색 결과 반경만큼 지도 레벨 조정
+                                        map.zoomToExtent(routeLayer.getDataExtent());
+
+                                    },
+                                    error: function (request, status, error) {
+                                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                                    }
+
+                                });
+
+                                function initTmap(){
+		// map 생성
+		// Tmap.map을 이용하여, 지도가 들어갈 div, 넓이, 높이를 설정합니다.
+	    map = new Tmap.Map({div:'map_div', // map을 표시해줄 div
+							width:'100%',  // map의 width 설정
+							height:'400px' // map의 height 설정
+	                    });
+	}     
+    map.ctrl_nav.dragPan.deactivate(); //지도 드래그 이동을 비활성화 합니다.
+                                // if (km < 20) {
+                                //     alert("주행가능한 거리가 20km 미만입니다.")
+                                // }
+                            }
+                        }
+                        xhr_data_list.open("GET", "http://192.168.0.7:7579/" + list[0]);//가장 최신의 차량데이터를 넣는다.
+
+                        xhr_data_list.setRequestHeader('Accept', 'application/onem2m-resource+xml');
+                        xhr_data_list.setRequestHeader('From', 'mobius');
+                        xhr_data_list.setRequestHeader('X-M2M-RI', '12345');
+                        xhr_data_list.setRequestHeader('X-M2M-Origin', 'origin');
+
+                        xhr_data_list.send();
+                    }
+                }
+                xhr_data.open("GET", "http://192.168.0.7:7579/Mobius/mobius/car8?fu=1");
+
+                xhr_data.setRequestHeader('Accept', 'application/onem2m-resource+xml');
+                xhr_data.setRequestHeader('From', 'mobius');
+                xhr_data.setRequestHeader('X-M2M-RI', '12345');
+                xhr_data.setRequestHeader('X-M2M-Origin', 'origin');
+
+                xhr_data.send();
+
+                cnt++;
+
+            }, 6000);
+    </script>
+
+    <!--bootstrap-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
