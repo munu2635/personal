@@ -659,9 +659,7 @@ public class MainService extends Service {
         try {
             unregisterReceiver(startAlarmReceiver); // Alarm 발생 시 전송되는 broadcast 수신 receiver를 해제
             unregisterReceiver(mWifiReceiver);      // wifiscan 발생 시 전송되는 broadcast 수신 receiver를 해제
-        } catch(IllegalArgumentException ex) {
-            ex.printStackTrace();
-        }
+        } catch(IllegalArgumentException ex) { ex.printStackTrace(); }
         // AlarmManager에 등록한 alarm 취소
         am.cancel(pendingIntent);
 
