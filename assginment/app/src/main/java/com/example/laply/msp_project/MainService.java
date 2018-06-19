@@ -31,11 +31,14 @@ package com.example.laply.msp_project;
 // gps 수신을 시작할때 사용
 // lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mGpsListener);
 
-// 정리 해야할것
+// 마무리 정리
 // 걸음 수 측정하기
-// gps확인 필요
+// gps 측정 및 확인 필요
 // ap 값 측정하기
 // 화면이 꺼진 상태에서 데이터
+
+// 집에 가서 -> 마무리하고 기능 작동 잘되는지 마무리 테스트 + ppt 작성
+// 내일 아침 직접테스트 위치
 
 import android.Manifest;
 import android.app.AlarmManager;
@@ -680,3 +683,4 @@ public class MainService extends Service {
         }
     }
 }
+
