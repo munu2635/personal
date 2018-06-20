@@ -251,7 +251,7 @@ public class MainService extends Service {
 
         private static final double NUMBER_OF_STEPS_PER_SEC = 1.5;
 
-        BroadcastReceiver mReceiver;
+
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 
         public StepMonitor(Context context) {
@@ -260,43 +260,31 @@ public class MainService extends Service {
             mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             mLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
-            filter.addAction(Intent.ACTION_SCREEN_OFF);
-            mReceiver = new ScreenReceiver();
-            registerReceiver(mReceiver, filter);
-
         }
         public void onStart() {
             // SensorEventListener 등록
             if (mLinear != null) {
-
-                mReceiver = new ScreenReceiver();
+                IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
                 registerReceiver(mReceiver, filter);
-
                 Log.d(LOGTAG, "Register Accel Listener!");
-                mSensorManager.registerListener(this, mLinear, SensorManager.SENSOR_DELAY_FASTEST);
+                mSensorManager.registerListener(
+                        StepMonitor.this, mLinear, SensorManager.SENSOR_DELAY_GAME);
             }
             // 변수 초기화
             isMoving = false;
             sensingCount = 0;
             movementCount = 0;
         }
-        public class ScreenReceiver extends BroadcastReceiver {
+        public BroadcastReceiver mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                   // refreshListener ();
+                    // Unregisters the listener and registers it again.
+                    mSensorManager.unregisterListener(StepMonitor.this);
+                    mSensorManager.registerListener(StepMonitor.this, mLinear, SensorManager.SENSOR_DELAY_GAME);
                 }
             }
-        }
-        public void refreshListener(){
-            mSensorManager.unregisterListener(this);
-            if (mLinear != null ) {
-                Log.d(LOGTAG, "Register Accel Listener! - Screen off");
-                mSensorManager.registerListener(this, mLinear, SensorManager.SENSOR_DELAY_GAME);
-
-            }
-        }
-
+        };
         public void onStop() {
             // SensorEventListener 등록 해제
             if (mSensorManager != null) {
