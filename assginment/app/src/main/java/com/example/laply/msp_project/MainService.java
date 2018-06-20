@@ -137,7 +137,6 @@ public class MainService extends Service {
 
         //파일 사용 부분 처리
         mFileMgr = new TextFileManager();
-        mFileMgr.save("------------------------------------------------------------------------------------\n");
         //센서 사용 부분 처리
         accSensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
