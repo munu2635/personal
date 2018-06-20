@@ -32,10 +32,10 @@ package com.example.laply.msp_project;
 // lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mGpsListener);
 
 // 마무리 정리
-// 걸음 수 측정하기 직접 수행하면서
-// gps 측정 및 확인 필요
-// ap 값 측정하기
+// ap -- 401호
 // 화면이 꺼진 상태에서 데이터
+//
+
 
 // 집에 가서 -> 마무리하고 기능 작동 잘되는지 마무리 테스트 + ppt 작성 + Battery Historian을 사용하여 자원 사용 정보 얻기
 // 내일 아침 직접테스트 위치 + 사용 하는 거 캡쳐 마무리
@@ -65,8 +65,6 @@ import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
-
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -145,7 +143,7 @@ public class MainService extends Service {
         setlocationdata_ap();   // ap 데이터 설정
         setlocationdata_gps();  // gps 데이터 설정
 
-       StartAlarm();
+        StartAlarm();
 
         super.onCreate();
     }
@@ -175,7 +173,6 @@ public class MainService extends Service {
                 wakeLock.acquire();
                 accelMonitor = new StepMonitor(context);
                 accelMonitor.onStart();
-                // 1초 동안 계산
                 timer = new CountDownTimer(activeTime, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
@@ -220,7 +217,7 @@ public class MainService extends Service {
                         wakeLock.release();
                         wakeLock = null;
                     } // 센서모니터로 계산된 움직임 여부에 따라 실행 분기
-                };
+                };// 1초 동안 계산
                 timer.start();
             }
         }
@@ -614,9 +611,7 @@ public class MainService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                Log.d(LOGTAG, " wifi - scan되고 어디 인지 확인 ");
-                // 검색이 되었을 때 기준으로 값을 출력하기 위해 사용하였다.
-
+                Log.d(LOGTAG, " wifi - scan되고 어디 인지 확인 "); // 검색이 되었을 때 기준으로 값을 출력하기 위해 사용하였다.
                 ScanResults();
                 Log.d(LOGTAG, "스캔 값에 따른 변화 place - " + place+" ap_location - " + ap_location );
                 if ( place == 0 ) { StartGps(); EndWifi(); } // 와이파이 위치 검출이 안됬을때 gps 수행 - 순서 2
@@ -667,7 +662,6 @@ public class MainService extends Service {
     } // 2번 위치일 때
     public LocationListener mGpsListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-            Toast.makeText(MainService.this, "gps - " + location.getLongitude(), Toast.LENGTH_SHORT).show();
             Log.d(LOGTAG, " gps값 변경 - "+ location.getLongitude() + " " + location.getLatitude() );
             if(place == 0) { stay_out(); EndGps(); }
         }
@@ -686,6 +680,7 @@ public class MainService extends Service {
         place = 4;
         Log.d(LOGTAG, " place - " + place );
     }   // 지정되지 않은 실외일때 - OK
+
     //------종료시 수행--------------------------------------------------------------------------------
     public void onDestroy() {
         try {
@@ -694,7 +689,7 @@ public class MainService extends Service {
         } catch(IllegalArgumentException ex) { ex.printStackTrace(); }
         // AlarmManager에 등록한 alarm 취소
         am.cancel(pendingIntent);
-        SetStay();
+        SetStay(); // 종료할때 만약 출력되지 않았다면 출력
         // release all the resources you use
         if(timer != null)
             timer.cancel();
