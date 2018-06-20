@@ -26,7 +26,7 @@ import java.util.TimerTask;
 // 움직임(1분 이상) + 걸음 수, 체류(5분 이상) + 장소 (지정, 실내외) 표기가 일어날 장소
 // 직접적으로 메인 서비스와의 intent를 사용하여 정보를 받을 공간
 // 기본구조
-// - 오늘의 날자 표기
+// - 오늘의 날짜 표기
 // - 기록되는 기록 부분 표기
 // + subactivity로 넘어가는 부분 포함된다.
 // 사용할 기능들의 퍼미션을 받아야하는 공간이기도하다.
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     boolean isPermitted_1 = false;
     boolean isPermitted_2 = false;
     boolean isPermitted_3 = false;
+
     final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 1;
     final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
     final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 3;
@@ -62,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION},1000);
+        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION},1000);
 
         mFileMgr = new TextFileManager();
 
@@ -77,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent data) {
         // 요청 코드에 따라 처리할 루틴을 구분해줌
@@ -86,62 +87,17 @@ public class MainActivity extends AppCompatActivity {
                 if(responseCode == RESULT_OK) {
                 } else if(responseCode == RESULT_CANCELED) {
                     Toast.makeText(this, "사용자가 discoverable을 허용하지 않았습니다.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                    finish(); }
             case REQUEST_ENABLE_DISCOVER:
                 if(responseCode == RESULT_CANCELED) {
                     Toast.makeText(this, "사용자가 discoverable을 허용하지 않았습니다.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                    finish(); }
             case REQUEST_ENABLE_GPS:
                 if(responseCode == RESULT_CANCELED) {
                     Toast.makeText(this, "사용자가 discoverable을 허용하지 않았습니다.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                    finish(); }
         }
     }
-
-    private void requestRuntimePermission() {
-        ACCESS_COARSE_LOCATION();
-        WRITE_EXTERNAL_STORAGE();
-        ACCESS_FINE_LOCATION();
-    }
-
-    public void ACCESS_COARSE_LOCATION() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            } else {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
-            }
-        } else {
-            isPermitted_1 = true;
-        }
-    }
-    public void WRITE_EXTERNAL_STORAGE() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            } else {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-            }
-        } else {
-            isPermitted_2 = true;
-        }
-    }
-    public void ACCESS_FINE_LOCATION() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            } else {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            }
-        } else {
-            isPermitted_3 = true;
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -156,9 +112,7 @@ public class MainActivity extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) { isPermitted_3 = true; } else { isPermitted_3 = false; }
                 return;
-            }
-        }
-    }
+            } } }
 
     @Override
     public void onDestroy() {

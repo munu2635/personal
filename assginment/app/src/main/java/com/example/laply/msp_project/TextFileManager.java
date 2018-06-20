@@ -33,11 +33,6 @@ public class TextFileManager {
         // 로그 파일 절대 경로 생성 (String 값)
         filePath = folderPath + "/" + FILE_NAME;
     }
-
-    public void create(){
-
-    }
-
     // 파일에 문자열 데이터를 쓰는 메소드
     public void save(String data) {
         if (data == null || data.isEmpty() == true) {
@@ -52,7 +47,6 @@ public class TextFileManager {
             e.printStackTrace();
         }
     }
-
     // 파일에서 데이터를 읽고 문자열 데이터로 반환하는 메소드
     public String load() {
         try {
@@ -75,7 +69,6 @@ public class TextFileManager {
         }
         return "";
     }
-
     // 파일 삭제 메소드
     public boolean delete() {
         // 로그 파일의 절대 경로를 이용하여 File 객체 생성
