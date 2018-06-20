@@ -207,11 +207,11 @@ public class MainService extends Service {
                             movenumber = 0; // 움직임을 멈추었을때 초기화
                             stopnumber++;
                             //6+11+16+ 21*12 = 285 => 약 4분 45 초 ==> 15
-                            if (stopnumber > 2) {    // 5분이상 움직임이 없었을때  StartStayCase();
+                            if (stopnumber > 4 && place == 0) {    // 5분이상 움직임이 없었고 장소가 정해지지 않았다면   StartStayCase();
                                 CHECK_WHAT_TO_DO = 3;
                             }
                         }
-                        // 값의 변경이 있을때 만 수행
+                        // 값의 변경이 있을때 만 수행 수정필
                         if (base != CHECK_WHAT_TO_DO) {
                             CheckMain();
                             base = CHECK_WHAT_TO_DO;
@@ -408,7 +408,9 @@ public class MainService extends Service {
                 } else if(ap_location == 2){
                     mFileMgr.save(start_date + "~" + end_date + " " + Location2.GetName() + " - " + staytime + " 분\n");
                 }
+                place = 0;
                 break;
+
             }
             case 2: {
                 Log.d(LOGTAG, "지정실외 - " + place);
@@ -417,19 +419,23 @@ public class MainService extends Service {
                 } else if(gps_location == 2){
                     mFileMgr.save(start_date + "~" + end_date  + " " + Location4.GetName() + " - " + staytime + " 분\n");
                 }
+                place = 0;
                 break;
             }
             case 3: {
                 Log.d(LOGTAG, "실내 - " + place);
                 mFileMgr.save( start_date + "~" + end_date  + " " + "실내 - " + staytime + " 분\n");
+                place = 0;
                 break;
             }
             case 4: {
                 Log.d(LOGTAG, "실외 - " + place);
                 mFileMgr.save( start_date + "~" + end_date  + " " + "실외 - " + staytime + " 분\n");
+                place = 0;
                 break;
             }
         }
+
         //자원의 종료
         EndGps();
         EndWifi();
@@ -449,7 +455,7 @@ public class MainService extends Service {
         }; //일정 시간동안 gps가 잡히지 않는다면 지정되지 않은 실내
 
         Timer timer = new Timer();
-        timer.schedule(t,20000); // 20초 이후에도 값이 없으면 실내
+        timer.schedule(t,10000); // 20초 이후에도 값이 없으면 실내
 
     }         // gps  관련 실행 함수
     public void StartWifi(){
@@ -481,28 +487,47 @@ public class MainService extends Service {
     }          // wifi 관련 종료 함수
     public void ScanResults(){
         try { if (wm.getScanResults() != null) {
-            //Log.d(LOGTAG, "1. " + wm.getScanResults().get(0).SSID + " " + wm.getScanResults().get(1).SSID);
-            // Log.d(LOGTAG, "1. " + Location2.GetSSRD(0, 0) + " " + Location2.GetSSRD(0, 1));
+            Log.d(LOGTAG, "1. " + wm.getScanResults().get(0).SSID + " " + wm.getScanResults().get(1).SSID);
+            Log.d(LOGTAG, "1. " + wm.getScanResults().get(0).level + " " + wm.getScanResults().get(1).level);
+
+            //Log.d(LOGTAG, "1. " + Location2.GetSSRD(0, 0) + " " + Location2.GetSSRD(0, 1));
             if (wm.getScanResults().get(0).SSID.equals(Location1.GetSSRD(0, 0))
-                    && Location1.GetRSSD_s(0, 0) < wm.getScanResults().get(0).level) {
+                    && Location1.GetRSSI_s(0, 0) < wm.getScanResults().get(0).level) {
                 if (wm.getScanResults().get(1).SSID.equals(Location1.GetSSRD(0, 1))
-                        && Location1.GetRSSD_s(0, 1) < wm.getScanResults().get(1).level) {
+                        && Location1.GetRSSI_s(0, 1) < wm.getScanResults().get(1).level) {
                     place = 1; ap_location = 1; //장소1일때 case1
                 }
             } else if (wm.getScanResults().get(0).SSID.equals(Location1.GetSSRD(1, 0))
-                    && Location1.GetRSSD_s(1, 0) < wm.getScanResults().get(0).level) {
+                    && Location1.GetRSSI_s(1, 0) < wm.getScanResults().get(0).level) {
                 if (wm.getScanResults().get(1).SSID.equals(Location1.GetSSRD(1, 1))
-                        && Location1.GetRSSD_s(1, 1) < wm.getScanResults().get(1).level) {
+                        && Location1.GetRSSI_s(1, 1) < wm.getScanResults().get(1).level) {
                     place = 1; ap_location = 1; //장소1일때 case2
                 }
             }
             if (wm.getScanResults().get(0).SSID.equals(Location2.GetSSRD(0, 0))
-                    && Location1.GetRSSD_s(0, 0) < wm.getScanResults().get(0).level) {
+                    && Location1.GetRSSI_s(0, 0) < wm.getScanResults().get(0).level) {
                 if (wm.getScanResults().get(1).SSID.equals(Location2.GetSSRD(0, 1))
-                        && Location1.GetRSSD_s(0, 1) < wm.getScanResults().get(1).level) {
+                        && Location1.GetRSSI_s(0, 1) < wm.getScanResults().get(1).level) {
                     place = 1; ap_location = 2; // 장소 2일때
                 }
             }
+
+            if (wm.getScanResults().get(0).SSID.equals(Location2.GetSSRD(1, 0))
+                    && Location1.GetRSSI_s(1, 0) < wm.getScanResults().get(0).level) {
+                if (wm.getScanResults().get(1).SSID.equals(Location2.GetSSRD(1, 1))
+                        && Location1.GetRSSI_s(1, 1) < wm.getScanResults().get(1).level) {
+                    place = 1; ap_location = 2; // 장소 2일때
+                }
+            }
+            if (wm.getScanResults().get(0).SSID.equals(Location2.GetSSRD(2, 0))
+                    && Location1.GetRSSI_s(2, 0) < wm.getScanResults().get(0).level) {
+                if (wm.getScanResults().get(1).SSID.equals(Location2.GetSSRD(2
+                        , 1))
+                        && Location1.GetRSSI_s(2, 1) < wm.getScanResults().get(1).level) {
+                    place = 1; ap_location = 2; // 장소 2일때
+                }
+            }
+
         }} catch (IndexOutOfBoundsException ex) { ex.printStackTrace(); }
     }      // wifiscan 된 값을 비교해서 위치 선택
 
@@ -524,11 +549,11 @@ public class MainService extends Service {
             return ap_SSRD[Case][i];
         }
 
-        public int GetRSSD_s(int Case, int i) {
+        public int GetRSSI_s(int Case, int i) {
             return ap_RSSI_s[Case][i];
         }
 
-        public int GetRSSD_l(int Case, int i) {
+        public int GetRSSI_l(int Case, int i) {
             return ap_RSSI_l[Case][i];
         }
 
@@ -553,7 +578,7 @@ public class MainService extends Service {
         String[][] SSRD2 = {{"iptime", "hy1838"}, {"달_2", "iptime"}};
         int[][] RSSI2 = {{-64, -80}, {-54, -95}};*/
         Location1.SetAp(name1, SSRD1, RSSI1_s, RSSI1_l);
-        Location2.SetAp(name2, SSRD2, RSSI2_s, RSSI1_l);
+        Location2.SetAp(name2, SSRD2, RSSI2_s, RSSI2_l);
     }   // 데이터 클레스에 저장 - 장소가 넓기 때문에 여러가지 케이스가 있을수 있다. 정확한 장소 확인을 위해 케이스를 여러가지 준비
     public class save_gps {
         String gps_name;
@@ -579,7 +604,7 @@ public class MainService extends Service {
         String name2 = "텔레토비 동산";
         double latitude2 = 36.764215;
         double longitude2 = 127.282173;
-        float radius2 = 50;
+        float radius2 = 80;
 
         Location3.SetGps(name1, latitude1, longitude1, radius1);
         Location4.SetGps(name2, latitude2, longitude2, radius2);
@@ -669,18 +694,7 @@ public class MainService extends Service {
         } catch(IllegalArgumentException ex) { ex.printStackTrace(); }
         // AlarmManager에 등록한 alarm 취소
         am.cancel(pendingIntent);
-
-        try {
-            // 자원해제 gps위치
-            lm.removeProximityAlert(proximityIntent1);
-            unregisterReceiver(receiver1);
-            lm.removeProximityAlert(proximityIntent2);
-            unregisterReceiver(receiver2);
-
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        }
-
+        SetStay();
         // release all the resources you use
         if(timer != null)
             timer.cancel();
@@ -690,4 +704,3 @@ public class MainService extends Service {
         }
     }
 }
-
