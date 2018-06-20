@@ -174,7 +174,7 @@ public class MainService extends Service {
                 wakeLock.acquire();
                 accelMonitor = new StepMonitor(context);
                 accelMonitor.onStart();
-                timer = new CountDownTimer(activeTime, 1000) {
+                timer = new CountDownTimer(activeTime, 2000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                     }
@@ -190,16 +190,16 @@ public class MainService extends Service {
                             stopnumber = 0; //움직임을 줬을때 초기화
                             steps += accelMonitor.NUMBER_OF_STEPS_PER_SEC + 7; // 1분당 걸음수 90 설정 걸음수 계산 1초 1.5 + 5초 7
                             movenumber++;
-                            // 6*10 = 60 1분 ==> 10
+                            // 7*8 = 56 1분 ==> 8
                             Log.d(LOGTAG, "step => " + accelMonitor.NUMBER_OF_STEPS_PER_SEC+ " " +steps);
-                            if (movenumber > 9) { CHECK_WHAT_TO_DO = 1; } // 1분 이상 움직였을때 StartMoveCase();
+                            if (movenumber > 8) { CHECK_WHAT_TO_DO = 1; } // 1분 이상 움직였을때 StartMoveCase();
                         } else { // 움직이지 않는다면
                             if (CHECK_WHAT_TO_DO == 1) { CHECK_WHAT_TO_DO = 2; } // 1분 이상 움직였지만 이제는 움직이지 않는다면 endMoveCase();
                             else steps = 0; // 1분 이상 움직이지 않고 멈췄을때 step 수 초기화
                             movenumber = 0; // 움직임을 멈추었을때 초기화
                             stopnumber++;
-                            //6+11+16+ 21*12 = 285 => 약 4분 45 초 ==> 15
-                            if (stopnumber > 14 && place == 0) { CHECK_WHAT_TO_DO = 3; CheckMain(); } // 5분이상 움직임이 없었고 장소가 정해지지 않았다면   StartStayCase();
+                            //7+12*24 = 295 => 약 4분 55 초 ==> 25
+                            if (stopnumber > 24 && place == 0) { CHECK_WHAT_TO_DO = 3; CheckMain(); } // 5분이상 움직임이 없었고 장소가 정해지지 않았다면   StartStayCase();
                         }
                         // 값의 변경이 있을때 만 수행
                         if (base != CHECK_WHAT_TO_DO && CHECK_WHAT_TO_DO != 3) { CheckMain();  base = CHECK_WHAT_TO_DO; }
@@ -237,6 +237,7 @@ public class MainService extends Service {
         private SensorManager mSensorManager;
         private Sensor mLinear;
 
+
         // 움직임 여부를 나타내는 bool 변수: true이면 움직임, false이면 안 움직임
         private boolean isMoving;
         // onStart() 호출 이후 onStop() 호출될 때까지 센서 데이터 업데이트 횟수를 저장하는 변수
@@ -250,29 +251,58 @@ public class MainService extends Service {
 
         private static final double NUMBER_OF_STEPS_PER_SEC = 1.5;
 
+        BroadcastReceiver mReceiver;
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+
         public StepMonitor(Context context) {
             this.context = context;
 
             mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
             mLinear = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        }
 
+            filter.addAction(Intent.ACTION_SCREEN_OFF);
+            mReceiver = new ScreenReceiver();
+            registerReceiver(mReceiver, filter);
+
+        }
         public void onStart() {
             // SensorEventListener 등록
             if (mLinear != null) {
+
+                mReceiver = new ScreenReceiver();
+                registerReceiver(mReceiver, filter);
+
                 Log.d(LOGTAG, "Register Accel Listener!");
-                mSensorManager.registerListener(this, mLinear, SensorManager.SENSOR_DELAY_GAME);
+                mSensorManager.registerListener(this, mLinear, SensorManager.SENSOR_DELAY_FASTEST);
             }
             // 변수 초기화
             isMoving = false;
             sensingCount = 0;
             movementCount = 0;
         }
+        public class ScreenReceiver extends BroadcastReceiver {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                   // refreshListener ();
+                }
+            }
+        }
+        public void refreshListener(){
+            mSensorManager.unregisterListener(this);
+            if (mLinear != null ) {
+                Log.d(LOGTAG, "Register Accel Listener! - Screen off");
+                mSensorManager.registerListener(this, mLinear, SensorManager.SENSOR_DELAY_GAME);
+
+            }
+        }
+
         public void onStop() {
             // SensorEventListener 등록 해제
             if (mSensorManager != null) {
                 Log.d(LOGTAG, "Unregister Accel Listener!");
                 mSensorManager.unregisterListener(this);
+                unregisterReceiver(mReceiver);
             }
         }
         @Override
