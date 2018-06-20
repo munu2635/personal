@@ -32,7 +32,7 @@ package com.example.laply.msp_project;
 // lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mGpsListener);
 
 // 마무리 정리
-// 걸음 수 측정하기
+// 걸음 수 측정하기 직접 수행하면서
 // gps 측정 및 확인 필요
 // ap 값 측정하기
 // 화면이 꺼진 상태에서 데이터
@@ -64,6 +64,7 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import java.text.SimpleDateFormat;
@@ -83,6 +84,7 @@ public class MainService extends Service {
     private PowerManager.WakeLock wakeLock;
     Sensor accSensor;
 
+    int steps = 0;
     int movenumber = 0, stopnumber = 0;     // 지정된 시간 움직, 체류 했을때 분기점이 되어줄 변수들
 
     IntentFilter filterwifi;
@@ -143,8 +145,7 @@ public class MainService extends Service {
         setlocationdata_ap();   // ap 데이터 설정
         setlocationdata_gps();  // gps 데이터 설정
 
-
-        StartAlarm();
+       StartAlarm();
 
         super.onCreate();
     }
@@ -191,20 +192,22 @@ public class MainService extends Service {
                                 CHECK_WHAT_TO_DO = 4;
                             } // 5분이상 멈췄었지만 이제는 멈춰있지 않는다면 endStayCase();
                             stopnumber = 0; //움직임을 줬을때 초기화
+                            steps += accelMonitor.NUMBER_OF_STEPS_PER_SEC + 6;
                             movenumber++;
                             // 6*10 = 60 1분 ==> 10
-                            if (movenumber > 4) {
+                            Log.d(LOGTAG, "step => " + accelMonitor.NUMBER_OF_STEPS_PER_SEC+ " " +steps);
+                            if (movenumber > 2) {
                                 CHECK_WHAT_TO_DO = 1;
                             } // 1분 이상 움직였을때  StartMoveCase();
                         } else { // 움직이지 않는다면
                             if (CHECK_WHAT_TO_DO == 1) {
                                 CHECK_WHAT_TO_DO = 2;
                             } // 1분 이상 움직였지만 이제는 움직이지 않는다면 endMoveCase();
-                            else accelMonitor.steps = 0; //1분 이상 움직이지 않고 멈췄을때 step 수 초기화
+                            else steps = 0; //1분 이상 움직이지 않고 멈췄을때 step 수 초기화
                             movenumber = 0; // 움직임을 멈추었을때 초기화
                             stopnumber++;
                             //6+11+16+ 21*12 = 285 => 약 4분 45 초 ==> 15
-                            if (stopnumber > 4) {    // 5분이상 움직임이 없었을때  StartStayCase();
+                            if (stopnumber > 2) {    // 5분이상 움직임이 없었을때  StartStayCase();
                                 CHECK_WHAT_TO_DO = 3;
                             }
                         }
@@ -243,7 +246,7 @@ public class MainService extends Service {
                 SystemClock.elapsedRealtime() + period - activeTime, pendingIntent);
     } // 다음알람설정 체류에 따라 값이 변함
     //-- 걸음 수 센서 --------------------------------------------------------------------------------
-    // (5초 슬립 1초 걸음수 측정이니까) 걸음 수 조정 필요, 꺼 놓으면 안되는거 수정필요
+    // 꺼 놓으면 안되는거 수정필요
     public class StepMonitor implements SensorEventListener {
         private static final String LOGTAG = "Step_Monitor";
 
@@ -259,10 +262,11 @@ public class MainService extends Service {
 
         // 센서 데이터 업데이트 중 움직임으로 판단된 횟수를 저장하는 변수
         private int movementCount;
-        int steps = 0;
 
         // 움직임 여부를 판단하기 위한 3축 가속도 데이터의 RMS 값의 기준 문턱값
-        private static final double RMS_THRESHOLD = 1.0;
+        private static final double RMS_THRESHOLD = 1.5;
+
+        private static final double NUMBER_OF_STEPS_PER_SEC = 1.5;
 
         public StepMonitor(Context context) {
             this.context = context;
@@ -312,7 +316,7 @@ public class MainService extends Service {
 
             // 계산한 rms 값을 threshold 값과 비교하여 움직임이면 count 변수 증가
             if (rms > RMS_THRESHOLD) {
-                steps = steps + movementCount++; // 움직인 횟수 값으로 걸음을 알 수 있을까? 측정 후 확인필요.
+                movementCount++; // 움직인 횟수 값으로 걸음을 알 수 있을까? 측정 후 확인필요. //1초동안 분석 움직임이있었다면 대략적으로 1초에 15스탭
             }
 
             // 여기서 걸음 수 측정 steps
@@ -366,8 +370,8 @@ public class MainService extends Service {
         start_date = mFo.format(starttime);
     }     // 움직임 시간 계산
     public void SetMove() {
-        mFileMgr.save(start_date + "~" + end_date+" 이동 - " + movetime + " 분. " + accelMonitor.steps + " 걸음\n");
-        accelMonitor.steps = 0;
+        mFileMgr.save(start_date + "~" + end_date  + " 이동 - " + movetime + " 분. " + steps + " 걸음\n");
+       steps = 0;
     }         // 움직임, 시간 기록
     //-- 체류 데이터 ---------------------------------------------------------------------------------
     // 지정된 실내외 작동 정확히 수정하고 실내인지 실외인지 알수있는 방법 찾기
@@ -400,29 +404,29 @@ public class MainService extends Service {
             case 1: {
                 Log.d(LOGTAG, "지정실내 - " + place);
                 if(ap_location == 1){
-                    mFileMgr.save(start_date + "~" + end_date + Location1.GetName() + " - " + staytime + " 분\n");
+                    mFileMgr.save(start_date + "~" + end_date + " " + Location1.GetName() + " - " + staytime + " 분\n");
                 } else if(ap_location == 2){
-                    mFileMgr.save(start_date + "~" + end_date + Location2.GetName() + " - " + staytime + " 분\n");
+                    mFileMgr.save(start_date + "~" + end_date + " " + Location2.GetName() + " - " + staytime + " 분\n");
                 }
                 break;
             }
             case 2: {
                 Log.d(LOGTAG, "지정실외 - " + place);
                 if(gps_location == 1){
-                    mFileMgr.save(start_date + "~" + end_date + Location3.GetName() + " - " + staytime + " 분\n");
+                    mFileMgr.save(start_date + "~" + end_date  + " " + Location3.GetName() + " - " + staytime + " 분\n");
                 } else if(gps_location == 2){
-                    mFileMgr.save(start_date + "~" + end_date + Location4.GetName() + " - " + staytime + " 분\n");
+                    mFileMgr.save(start_date + "~" + end_date  + " " + Location4.GetName() + " - " + staytime + " 분\n");
                 }
                 break;
             }
             case 3: {
                 Log.d(LOGTAG, "실내 - " + place);
-                mFileMgr.save( start_date + "~" + end_date + "실내 - " + staytime + " 분\n");
+                mFileMgr.save( start_date + "~" + end_date  + " " + "실내 - " + staytime + " 분\n");
                 break;
             }
             case 4: {
                 Log.d(LOGTAG, "실외 - " + place);
-                mFileMgr.save( start_date + "~" + end_date + "실외 - " + staytime + " 분\n");
+                mFileMgr.save( start_date + "~" + end_date  + " " + "실외 - " + staytime + " 분\n");
                 break;
             }
         }
@@ -433,27 +437,19 @@ public class MainService extends Service {
 
     public void StartGps(){
         LocationAlarm();
-        if (ActivityCompat.checkSelfPermission(MainService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(MainService.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(LOGTAG, "퍼미션 에러" + place);
-            return;
-        }
+        if (ActivityCompat.checkSelfPermission(MainService.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) { return;}
 
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,0, mGpsListener); //1초마다 0미터마다 갱신
-        Log.d(LOGTAG, "gps 스타트. place - " + place);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, mGpsListener);
 
         TimerTask t = new TimerTask() {
             @Override
             public void run() {
-                if(place == 0){
-                    stay_in();
-                }
+                if(place == 0){ stay_in(); EndGps(); }
             }
         }; //일정 시간동안 gps가 잡히지 않는다면 지정되지 않은 실내
 
         Timer timer = new Timer();
-        timer.schedule(t,0, 10000); //일단 10초
-
+        timer.schedule(t,20000); // 20초 이후에도 값이 없으면 실내
 
     }         // gps  관련 실행 함수
     public void StartWifi(){
@@ -467,6 +463,7 @@ public class MainService extends Service {
     public void EndGps(){
         try {
             // 자원해제 gps위치
+            lm.removeUpdates(mGpsListener);
             lm.removeProximityAlert(proximityIntent1);
             unregisterReceiver(receiver1);
             lm.removeProximityAlert(proximityIntent2);
@@ -486,42 +483,53 @@ public class MainService extends Service {
         try { if (wm.getScanResults() != null) {
             //Log.d(LOGTAG, "1. " + wm.getScanResults().get(0).SSID + " " + wm.getScanResults().get(1).SSID);
             // Log.d(LOGTAG, "1. " + Location2.GetSSRD(0, 0) + " " + Location2.GetSSRD(0, 1));
-            if (wm.getScanResults().get(0).SSID.equals(Location1.GetSSRD(0, 0))) {
-                if (wm.getScanResults().get(1).SSID.equals(Location1.GetSSRD(0, 1))) { place = 1; ap_location = 1; //장소1일때 case1   case가 여러개 있을거야 여러장소 확실하게
+            if (wm.getScanResults().get(0).SSID.equals(Location1.GetSSRD(0, 0))
+                    && Location1.GetRSSD_s(0, 0) < wm.getScanResults().get(0).level) {
+                if (wm.getScanResults().get(1).SSID.equals(Location1.GetSSRD(0, 1))
+                        && Location1.GetRSSD_s(0, 1) < wm.getScanResults().get(1).level) {
+                    place = 1; ap_location = 1; //장소1일때 case1
                 }
-            } else if (wm.getScanResults().get(0).SSID.equals(Location1.GetSSRD(1, 0))) {
-                if (wm.getScanResults().get(1).SSID.equals(Location1.GetSSRD(1, 1))) { place = 1; ap_location = 1; //장소1일때 case2
+            } else if (wm.getScanResults().get(0).SSID.equals(Location1.GetSSRD(1, 0))
+                    && Location1.GetRSSD_s(1, 0) < wm.getScanResults().get(0).level) {
+                if (wm.getScanResults().get(1).SSID.equals(Location1.GetSSRD(1, 1))
+                        && Location1.GetRSSD_s(1, 1) < wm.getScanResults().get(1).level) {
+                    place = 1; ap_location = 1; //장소1일때 case2
                 }
             }
-
-            if (wm.getScanResults().get(0).SSID.equals(Location2.GetSSRD(0, 0))) {
-                if (wm.getScanResults().get(1).SSID.equals(Location2.GetSSRD(0, 1))) { place = 1; ap_location = 2; // 장소 2일때
+            if (wm.getScanResults().get(0).SSID.equals(Location2.GetSSRD(0, 0))
+                    && Location1.GetRSSD_s(0, 0) < wm.getScanResults().get(0).level) {
+                if (wm.getScanResults().get(1).SSID.equals(Location2.GetSSRD(0, 1))
+                        && Location1.GetRSSD_s(0, 1) < wm.getScanResults().get(1).level) {
+                    place = 1; ap_location = 2; // 장소 2일때
                 }
-            } else if (wm.getScanResults().get(0).SSID.equals(Location2.GetSSRD(1, 0))) {
-                if (wm.getScanResults().get(1).SSID.equals(Location2.GetSSRD(1, 1))) {  place = 1; ap_location = 2; // 장소 2일때
-                }
-            }}
-        } catch (IndexOutOfBoundsException ex) { ex.printStackTrace(); }
-    }      // wifiscan 된 값을 비교해서 위치 선택   -- ok ap 값만 정확히 지정 된다.
+            }
+        }} catch (IndexOutOfBoundsException ex) { ex.printStackTrace(); }
+    }      // wifiscan 된 값을 비교해서 위치 선택
 
     public class save_ap {
         String ap_name;
         String[][] ap_SSRD;
-        int[][] ap_RSSI;
+        int[][] ap_RSSI_s;
+        int[][] ap_RSSI_l;
 
         //case가 여러개 필요할듯
-        public void SetAp(String name, String[][] SSRD, int[][] RSSI) {
+        public void SetAp(String name, String[][] SSRD, int[][] RSSIs, int[][] RSSIl) {
             ap_name = name;
             ap_SSRD = SSRD;
-            ap_RSSI = RSSI;
+            ap_RSSI_s = RSSIs;
+            ap_RSSI_l = RSSIl;
         }
 
         public String GetSSRD(int Case, int i) {
             return ap_SSRD[Case][i];
         }
 
-        public int GetRSSD(int Case, int i) {
-            return ap_RSSI[Case][i];
+        public int GetRSSD_s(int Case, int i) {
+            return ap_RSSI_s[Case][i];
+        }
+
+        public int GetRSSD_l(int Case, int i) {
+            return ap_RSSI_l[Case][i];
         }
 
         public String GetName() {
@@ -530,20 +538,22 @@ public class MainService extends Service {
     }               // ap데이터를 저장한 클래스 ap데이터를 받아올 수 있다.
     public void setlocationdata_ap() {
         String name1 = "401";
-        String[][] SSRD1 = {{"406", "KUTAP_N"}, {"KUTAP_N", "406"}, {"", ""}}; // 추가 될 수 있음
-        int[][] RSSI1 = {{-62, -79}, {-83, -62}};
+        String[][] SSRD1 = {{"406", "KUTAP_N"}, {"KUTAP_N", "406"}, {"KUTAP", "KUTAP_N"}, {"KUTAP", "406"}}; // 추가 될 수 있음
+        int[][] RSSI1_s = {{-55, -69}, {-73, -52}, {-50, -50}, {-51, -59}};
+        int[][] RSSI1_l = {{-70, -89}, {-93, -72}};
+        String name2 = "다산정보관 1층 로비";
+        String[][] SSRD2 = {{"KOREATECH", "KOREATECH"}, {"KUTAP_N","KOREATECH"},{"KUTAP_N", "KUTAP_N"}};
+        int[][]  RSSI2_s = {{-62, -58}, {-45, -60}, {-50, -70}};
+        int[][]  RSSI2_l = {{-85, -85},};
+
         /*String name2 = "랩실";
         String[][] SSRD2 = {{"uoc5G", "KangLab5G"}, {"", ""}};
         int[][] RSSI2 = {{-64, -80}, {-54, -95}};
         /*String name2 = "집";
         String[][] SSRD2 = {{"iptime", "hy1838"}, {"달_2", "iptime"}};
         int[][] RSSI2 = {{-64, -80}, {-54, -95}};*/
-        String name2 = "다산정보관 1층 로비";
-        String[][] SSRD2 = {{"c1","d1"}, {"c2","d2"}};
-        int[][]  RSSI2 = {{-54, -95},{-54, -95}};
-
-        Location1.SetAp(name1, SSRD1, RSSI1);
-        Location2.SetAp(name2, SSRD2, RSSI2);
+        Location1.SetAp(name1, SSRD1, RSSI1_s, RSSI1_l);
+        Location2.SetAp(name2, SSRD2, RSSI2_s, RSSI1_l);
     }   // 데이터 클레스에 저장 - 장소가 넓기 때문에 여러가지 케이스가 있을수 있다. 정확한 장소 확인을 위해 케이스를 여러가지 준비
     public class save_gps {
         String gps_name;
@@ -587,7 +597,7 @@ public class MainService extends Service {
                 if ( place == 0 ) { StartGps(); EndWifi(); } // 와이파이 위치 검출이 안됬을때 gps 수행 - 순서 2
             }
         }
-    }; // 실내 저장된 위치 채류시 확인 브로드캐스트 -- ok
+    }; // 실내 저장된 위치 채류시 확인 브로드캐스트
 
     public void LocationAlarm(){
         Log.d(LOGTAG, " gps Location 알람 설정완료");
@@ -631,18 +641,15 @@ public class MainService extends Service {
         }
     } // 2번 위치일 때
     public LocationListener mGpsListener = new LocationListener() {
-        @Override
         public void onLocationChanged(Location location) {
+            Toast.makeText(MainService.this, "gps - " + location.getLongitude(), Toast.LENGTH_SHORT).show();
             Log.d(LOGTAG, " gps값 변경 - "+ location.getLongitude() + " " + location.getLatitude() );
             if(place == 0) { stay_out(); EndGps(); }
         }
-        @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
         }
-        @Override
         public void onProviderEnabled(String s) {
         }
-        @Override
         public void onProviderDisabled(String s) {
         }
     }; // gps값이 변화시 사용

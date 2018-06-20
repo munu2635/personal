@@ -76,6 +76,7 @@ public class StartActivity extends Activity {
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(StartActivity.this,
                     Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
             } else {
                 ActivityCompat.requestPermissions(StartActivity.this,
                         new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
@@ -83,33 +84,36 @@ public class StartActivity extends Activity {
             }
         } else {
             isPermitted_1 = true;
-        }
 
-        if (ContextCompat.checkSelfPermission(StartActivity.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(StartActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            if (ContextCompat.checkSelfPermission(StartActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(StartActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                } else {
+                    ActivityCompat.requestPermissions(StartActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                }
             } else {
-                ActivityCompat.requestPermissions(StartActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                isPermitted_2 = true;
+
+
+                if (ContextCompat.checkSelfPermission(StartActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(StartActivity.this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    } else {
+                        ActivityCompat.requestPermissions(StartActivity.this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                    }
+                } else {
+                    isPermitted_3 = true;
+                }
             }
-        } else {
-            isPermitted_2 = true;
-        }
-        if (ContextCompat.checkSelfPermission(StartActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(StartActivity.this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-            } else {
-                ActivityCompat.requestPermissions(StartActivity.this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            }
-        } else {
-            isPermitted_3 = true;
         }
     }
     @Override
