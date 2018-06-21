@@ -187,21 +187,22 @@ public class MainService extends Service {
                         if (accelMonitor.isMoving()) { //움직인다면
                             if (CHECK_WHAT_TO_DO == 3) { CHECK_WHAT_TO_DO = 4; } // 5분이상 멈췄었지만 이제는 멈춰있지 않는다면 endStayCase();
                             stopnumber = 0; //움직임을 줬을때 초기화
-                            steps += accelMonitor.NUMBER_OF_STEPS_PER_SEC + 7; // 1분당 걸음수 90 설정 걸음수 계산 1초 1.5 + 5초 7
+                            steps += accelMonitor.NUMBER_OF_STEPS_PER_SEC * 2 + 7; // 1분당 걸음수 90 설정 걸음수 계산 2초 3 + 5초 7
                             movenumber++;
-                            // 7*8 = 56 1분 ==> 8
-                            Log.d(LOGTAG, "step => " + accelMonitor.NUMBER_OF_STEPS_PER_SEC+ " " +steps);
-                            if (movenumber > 8) { CHECK_WHAT_TO_DO = 1; } // 1분 이상 움직였을때 StartMoveCase();
+                            Log.d(LOGTAG, "step => " + accelMonitor.NUMBER_OF_STEPS_PER_SEC * 2 + " " + steps);
+                            CHECK_WHAT_TO_DO = 1; // 움직임이 있을때  StartMoveCase();
                         } else { // 움직이지 않는다면
-                            if (CHECK_WHAT_TO_DO == 1) { CHECK_WHAT_TO_DO = 2; } // 1분 이상 움직였지만 이제는 움직이지 않는다면 endMoveCase();
+                            starttime = new Date(System.currentTimeMillis());// 움직이지 않은것을 시작한 시간을 받아온다.
+                            // 7*8 = 56 1분 ==> 8
+                            if ( movenumber > 8) { CHECK_WHAT_TO_DO = 2; } // 1분 이상 움직였지만 이제는 움직이지 않는다면 endMoveCase();
                             else steps = 0; // 1분 이상 움직이지 않고 멈췄을때 step 수 초기화
                             movenumber = 0; // 움직임을 멈추었을때 초기화
                             stopnumber++;
                             //7+12*24 = 295 => 약 4분 55 초 ==> 25
-                            if (stopnumber > 24 && place == 0) { CHECK_WHAT_TO_DO = 3; CheckMain(); } // 5분이상 움직임이 없었고 장소가 정해지지 않았다면   StartStayCase();
+                            if (stopnumber > 24 ) { CHECK_WHAT_TO_DO = 3; } // 5분이상 움직임이 없었고 장소가 정해지지 않았다면   StartStayCase();
                         }
                         // 값의 변경이 있을때 만 수행
-                        if (base != CHECK_WHAT_TO_DO && CHECK_WHAT_TO_DO != 3) { CheckMain();  base = CHECK_WHAT_TO_DO; }
+                        if (base != CHECK_WHAT_TO_DO) { CheckMain();  base = CHECK_WHAT_TO_DO; }
 
                         wakeLock.release();
                         wakeLock = null;
@@ -353,9 +354,9 @@ public class MainService extends Service {
         GetMoveTime();
         SetMove();
     }     // 움직임 끝
-    public void GetMoveTime() {
+    public void GetMoveTime() { //starttime - endtime
         endtime = new Date(System.currentTimeMillis());
-        movetime = (endtime.getTime() - starttime.getTime() + 60000) / 60000;
+        movetime = (endtime.getTime() - starttime.getTime()) / 60000;
         end_date = mFo.format(endtime);
         start_date = mFo.format(starttime);
     }     // 움직임 시간 계산
@@ -371,10 +372,6 @@ public class MainService extends Service {
 
     public void StartStayCase() {
         Log.d(LOGTAG, "StartStayCase");
-        if(checktwo == 0) { //위치 파악하기 위해 여러번 수행시, 수행 시작시간이 바뀌지 않도록 설정
-            starttime = new Date(System.currentTimeMillis());
-            checktwo = 1;
-        }
         StartWifi();  // - 순서 1
     }   // 체류시작
     public void EndStayCase() {
@@ -383,9 +380,9 @@ public class MainService extends Service {
         SetStay();
         checktwo = 0;
     }     // 체류 끝
-    public void GetStayTime(){ //분 단위 endtime - starttime + 5분
+    public void GetStayTime(){ //분 단위 endtime - starttime
         endtime = new Date(System.currentTimeMillis());
-        staytime = (endtime.getTime() - starttime.getTime() + 300000) / 60000;
+        staytime = (endtime.getTime() - starttime.getTime()) / 60000;
         end_date = mFo.format(endtime);
         start_date = mFo.format(starttime);
     }      // 체류 시간 계
@@ -640,7 +637,6 @@ public class MainService extends Service {
         place = 4;  EndGps();
         Log.d(LOGTAG, " place - " + place );
     }   // 지정되지 않은 실외일때 - OK
-
     //------종료시 수행--------------------------------------------------------------------------------
     public void onDestroy() {
         try {
