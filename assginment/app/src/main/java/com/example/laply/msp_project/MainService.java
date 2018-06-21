@@ -200,6 +200,7 @@ public class MainService extends Service {
                             stopnumber++;
                             //7+12*24 = 295 => 약 4분 55 초 ==> 25
                             if (stopnumber > 24 ) { CHECK_WHAT_TO_DO = 3; } // 5분이상 움직임이 없었고 장소가 정해지지 않았다면   StartStayCase();
+
                         }
                         // 값의 변경이 있을때 만 수행
                         if (base != CHECK_WHAT_TO_DO) { CheckMain();  base = CHECK_WHAT_TO_DO; }
