@@ -190,7 +190,7 @@ public class MainService extends Service {
                             steps += accelMonitor.NUMBER_OF_STEPS_PER_SEC + 7; // 1분당 걸음수 90 설정 걸음수 계산 1초 1.5 + 5초 7
                             movenumber++;
                             // 7*8 = 56 1분 ==> 8
-                            Log.d(LOGTAG, "step => " + accelMonitor.NUMBER_OF_STEPS_PER_SEC+ " " +steps);
+                            Log.d(LOGTAG, "step => " + accelMonitor.NUMBER_OF_STEPS_PER_SEC * 2 + " " +steps);
                             if (movenumber > 8) { CHECK_WHAT_TO_DO = 1; } // 1분 이상 움직였을때 StartMoveCase();
                         } else { // 움직이지 않는다면
                             if (CHECK_WHAT_TO_DO == 1) { CHECK_WHAT_TO_DO = 2; } // 1분 이상 움직였지만 이제는 움직이지 않는다면 endMoveCase();
@@ -198,10 +198,10 @@ public class MainService extends Service {
                             movenumber = 0; // 움직임을 멈추었을때 초기화
                             stopnumber++;
                             //7+12*24 = 295 => 약 4분 55 초 ==> 25
-                            if (stopnumber > 24 && place == 0) { CHECK_WHAT_TO_DO = 3; CheckMain(); } // 5분이상 움직임이 없었고 장소가 정해지지 않았다면   StartStayCase();
+                            if (stopnumber >8 ) { CHECK_WHAT_TO_DO = 3; } // 5분이상 움직임이 없었고 장소가 정해지지 않았다면   StartStayCase();
                         }
                         // 값의 변경이 있을때 만 수행
-                        if (base != CHECK_WHAT_TO_DO && CHECK_WHAT_TO_DO != 3) { CheckMain();  base = CHECK_WHAT_TO_DO; }
+                        if (base != CHECK_WHAT_TO_DO) { CheckMain();  base = CHECK_WHAT_TO_DO; }
 
                         wakeLock.release();
                         wakeLock = null;
@@ -370,11 +370,8 @@ public class MainService extends Service {
     //     4.   gps값 분석 - 지정된 실외, 지정되지 않은 실외 확인
 
     public void StartStayCase() {
-        Log.d(LOGTAG, "StartStayCase");
-        if(checktwo == 0) { //위치 파악하기 위해 여러번 수행시, 수행 시작시간이 바뀌지 않도록 설정
-            starttime = new Date(System.currentTimeMillis());
-            checktwo = 1;
-        }
+        starttime = new Date(System.currentTimeMillis());
+        Log.d(LOGTAG, "StartStayCase"+starttime);
         StartWifi();  // - 순서 1
     }   // 체류시작
     public void EndStayCase() {
